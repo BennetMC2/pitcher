@@ -8,11 +8,15 @@ export const CREDIT_PACKS = [
   { id: "pack_50", credits: 50, priceCents: 4900, priceLabel: "$49", perPitch: "$0.98" },
 ] as const;
 
-export const STRIPE_PRICE_IDS: Record<string, string> = {
-  pack_5:  process.env.STRIPE_PRICE_PACK_5  ?? "",
-  pack_15: process.env.STRIPE_PRICE_PACK_15 ?? "",
-  pack_50: process.env.STRIPE_PRICE_PACK_50 ?? "",
-};
+// Read at call time, not module load time, to avoid stale build-time values
+export function getStripePriceId(packId: string): string {
+  const map: Record<string, string | undefined> = {
+    pack_5:  process.env.STRIPE_PRICE_PACK_5,
+    pack_15: process.env.STRIPE_PRICE_PACK_15,
+    pack_50: process.env.STRIPE_PRICE_PACK_50,
+  };
+  return map[packId] ?? "";
+}
 
 export const STORAGE_BUCKET = "pitch-videos";
 

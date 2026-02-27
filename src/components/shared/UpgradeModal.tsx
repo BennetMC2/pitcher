@@ -26,18 +26,26 @@ const paidFeatures = [
 
 export function UpgradeModal({ open, onOpenChange }: UpgradeModalProps) {
   const [loadingPack, setLoadingPack] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleBuy(packId: string) {
     setLoadingPack(packId);
+    setError(null);
     try {
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ packId }),
       });
-      const { url } = await res.json();
-      if (url) window.location.href = url;
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || "Failed to create checkout session");
+        setLoadingPack(null);
+      }
     } catch {
+      setError("Network error — please try again");
       setLoadingPack(null);
     }
   }
@@ -105,6 +113,10 @@ export function UpgradeModal({ open, onOpenChange }: UpgradeModalProps) {
             );
           })}
         </div>
+
+        {error && (
+          <p className="text-sm text-destructive text-center">{error}</p>
+        )}
 
         <Button
           variant="ghost"
