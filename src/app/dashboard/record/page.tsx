@@ -1,16 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { RecordingStudio } from "@/components/record/RecordingStudio";
 import { UpgradeModal } from "@/components/shared/UpgradeModal";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { Badge } from "@/components/ui/badge";
 import { Coins } from "lucide-react";
+import { useRecordingStore } from "@/store/recordingStore";
 
 export default function RecordPage() {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const { canRecord, maxSeconds, nextPitchIsPaid, loading } = useSubscription();
+  const reset = useRecordingStore((s) => s.reset);
+
+  // Reset recording state when navigating to this page
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   if (loading) {
     return (
