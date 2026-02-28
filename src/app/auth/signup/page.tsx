@@ -36,7 +36,7 @@ export default function SignupPage() {
     setLoading(true);
     setError(null);
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data: authData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
@@ -47,6 +47,10 @@ export default function SignupPage() {
     if (error) {
       setError(error.message);
       setLoading(false);
+      return;
+    }
+    if (authData?.session) {
+      router.push("/dashboard");
       return;
     }
     setVerifyEmail(true);
@@ -99,7 +103,7 @@ export default function SignupPage() {
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Create your account</h1>
           <p className="mt-1 text-muted-foreground">
-            3 free pitches/month. No card required.
+            3 free pitches included. No card required.
           </p>
         </div>
 

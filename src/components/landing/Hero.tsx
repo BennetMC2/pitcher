@@ -47,7 +47,7 @@ export function Hero() {
         </div>
 
         <p className="mt-4 text-sm text-muted-foreground">
-          3 free pitches/month · No credit card required
+          3 free pitches included · No credit card required
         </p>
 
         {/* Mockup preview */}
