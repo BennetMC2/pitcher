@@ -14,7 +14,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <Mic2 className="h-5 w-5 text-primary" />
-            Pitcher
+            Nailed It
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
             <Link
@@ -53,7 +53,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
             <Mic2 className="h-4 w-4" />
-            <span className="font-medium text-foreground">Pitcher</span>
+            <span className="font-medium text-foreground">Nailed It</span>
             <span>— AI Pitch Coach</span>
           </div>
           <div className="flex gap-6">

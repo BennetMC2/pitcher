@@ -99,7 +99,7 @@ export default function SignupPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2 font-bold text-xl">
             <Mic2 className="h-6 w-6 text-primary" />
-            Pitcher
+            Nailed It
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Create your account</h1>
           <p className="mt-1 text-muted-foreground">

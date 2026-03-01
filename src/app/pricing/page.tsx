@@ -55,7 +55,7 @@ export default function PricingPage() {
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <Mic2 className="h-5 w-5 text-primary" />
-            Pitcher
+            Nailed It
           </Link>
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" asChild>
@@ -166,8 +166,8 @@ export default function PricingPage() {
 
           <p className="mt-12 text-center text-sm text-muted-foreground">
             Questions? Email us at{" "}
-            <a href="mailto:hello@pitcher.ai" className="text-primary hover:underline">
-              hello@pitcher.ai
+            <a href="mailto:hello@nail-it.io" className="text-primary hover:underline">
+              hello@nail-it.io
             </a>
           </p>
         </div>

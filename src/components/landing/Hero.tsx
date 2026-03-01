@@ -56,7 +56,7 @@ export function Hero() {
             <div className="h-3 w-3 rounded-full bg-red-400" />
             <div className="h-3 w-3 rounded-full bg-yellow-400" />
             <div className="h-3 w-3 rounded-full bg-green-400" />
-            <span className="ml-2 text-xs text-muted-foreground">pitcher.ai/dashboard/session/abc123</span>
+            <span className="ml-2 text-xs text-muted-foreground">nail-it.io/dashboard/session/abc123</span>
           </div>
           <div className="grid grid-cols-2 gap-4 p-6 md:grid-cols-4">
             {[

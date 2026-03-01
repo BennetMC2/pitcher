@@ -35,7 +35,7 @@ export default async function SettingsPage() {
         <div className="mx-auto flex max-w-2xl items-center gap-4 px-6 py-4">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold">
             <Mic2 className="h-5 w-5 text-primary" />
-            Pitcher
+            Nailed It
           </Link>
           <span className="text-muted-foreground">/</span>
           <span className="text-sm font-medium">Settings</span>

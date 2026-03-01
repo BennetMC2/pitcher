@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pitcher — AI Pitch Coach",
+  title: "Nailed It — AI Pitch Coach",
   description:
     "Record your elevator pitch and get instant AI feedback on delivery, body language, story structure, and confidence.",
   openGraph: {
-    title: "Pitcher — AI Pitch Coach",
+    title: "Nailed It — AI Pitch Coach",
     description:
       "Record your elevator pitch and get instant AI feedback on delivery, body language, story structure, and confidence.",
     type: "website",

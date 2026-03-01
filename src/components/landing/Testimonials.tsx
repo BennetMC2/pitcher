@@ -1,7 +1,7 @@
 const testimonials = [
   {
     quote:
-      "I used Pitcher 3 days before my YC interview. It caught that I was saying 'um' 23 times in two minutes. Got the interview, got in.",
+      "I used Nailed It 3 days before my YC interview. It caught that I was saying 'um' 23 times in two minutes. Got the interview, got in.",
     author: "Sarah K.",
     role: "Founder, Batch W24",
     initials: "SK",

@@ -46,7 +46,7 @@ export default async function DashboardLayout({
           <div className="flex items-center gap-6">
             <Link href="/dashboard" className="flex items-center gap-2 font-bold">
               <Mic2 className="h-5 w-5 text-primary" />
-              Pitcher
+              Nailed It
             </Link>
             <nav className="hidden items-center gap-1 md:flex">
               <Button variant="ghost" size="sm" asChild>
