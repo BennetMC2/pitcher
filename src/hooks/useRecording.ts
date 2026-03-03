@@ -29,6 +29,7 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
   }
 
   const initCamera = useCallback(async () => {
+    setError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: 1280, height: 720, facingMode: "user" },
@@ -36,8 +37,15 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
       });
       streamRef.current = stream;
       setPhase("ready");
-    } catch {
-      setError("Camera permission denied. Please allow camera and microphone access.");
+    } catch (err) {
+      const name = err instanceof DOMException ? err.name : "";
+      if (name === "NotAllowedError") {
+        setError("Camera permission denied. Please allow camera and microphone access in your browser settings.");
+      } else if (name === "NotFoundError") {
+        setError("No camera or microphone found. Please connect one and try again.");
+      } else {
+        setError("Could not access camera. Please check your browser permissions and try again.");
+      }
       setPhase("idle");
     }
   }, [setPhase, setError]);
