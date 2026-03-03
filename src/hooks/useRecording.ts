@@ -30,24 +30,46 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
 
   const initCamera = useCallback(async () => {
     setError(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 1280, height: 720, facingMode: "user" },
-        audio: true,
-      });
-      streamRef.current = stream;
-      setPhase("ready");
-    } catch (err) {
-      const name = err instanceof DOMException ? err.name : "";
-      if (name === "NotAllowedError") {
-        setError("Camera permission denied. Please allow camera and microphone access in your browser settings.");
-      } else if (name === "NotFoundError") {
-        setError("No camera or microphone found. Please connect one and try again.");
-      } else {
-        setError("Could not access camera. Please check your browser permissions and try again.");
+
+    // Try progressively simpler constraints
+    const attempts = [
+      { video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }, audio: true },
+      { video: { facingMode: "user" }, audio: true },
+      { video: true, audio: true },
+    ];
+
+    for (const constraints of attempts) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = stream;
+        setPhase("ready");
+        return;
+      } catch (err) {
+        const name = err instanceof DOMException ? err.name : "";
+        // If permission denied or no device, don't try simpler constraints — it won't help
+        if (name === "NotAllowedError" || name === "NotFoundError") {
+          if (name === "NotAllowedError") {
+            setError(
+              "Camera access blocked. Click the lock/settings icon in your browser's address bar, set Camera and Microphone to \"Allow\", then reload this page."
+            );
+          } else {
+            setError(
+              "No camera found. Make sure your device has a camera, no other app is using it, then try again."
+            );
+          }
+          setPhase("idle");
+          return;
+        }
+        // OverconstrainedError or other — try simpler constraints
+        continue;
       }
-      setPhase("idle");
     }
+
+    // All attempts failed
+    setError(
+      "Could not access your camera. Try closing other apps that use the camera, then reload this page."
+    );
+    setPhase("idle");
   }, [setPhase, setError]);
 
   const startCountdown = useCallback(() => {
