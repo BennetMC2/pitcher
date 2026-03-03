@@ -14,7 +14,13 @@ export function useUpload() {
     useRecordingStore();
 
   async function upload(title = "Untitled Pitch", browserTranscript?: string): Promise<UploadResult | null> {
-    if (!videoBlob) {
+    // Read from store directly to avoid stale closure (e.g. resume flow sets blob then calls upload immediately)
+    const currentState = useRecordingStore.getState();
+    const blob = currentState.videoBlob;
+    const currentGoal = currentState.goal;
+    const currentDuration = currentState.recordingSeconds;
+
+    if (!blob) {
       setError("No recording to upload");
       return null;
     }
@@ -27,7 +33,7 @@ export function useUpload() {
       const sessionRes = await fetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, duration_seconds: recordingSeconds, goal: goal ?? "startup_pitch" }),
+        body: JSON.stringify({ title, duration_seconds: currentDuration, goal: currentGoal ?? "startup_pitch" }),
       });
 
       if (!sessionRes.ok) {
@@ -42,7 +48,7 @@ export function useUpload() {
       const uploadRes = await fetch(uploadUrl, {
         method: "PUT",
         headers: { "Content-Type": "video/webm" },
-        body: videoBlob,
+        body: blob,
       });
 
       if (!uploadRes.ok) throw new Error("Video upload failed");
