@@ -115,7 +115,13 @@ export function RecordingStudio({
           className="gap-2"
         >
           <Mic className="h-4 w-4" />
-          {canRecord ? (isStartDisabled ? "Select a pitch type first" : "Start recording") : "Upgrade to record"}
+          {canRecord
+            ? isStartDisabled
+              ? "Select a pitch type first"
+              : error
+                ? "Try again"
+                : "Start recording"
+            : "Upgrade to record"}
         </Button>
       </div>
     );

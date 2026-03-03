@@ -46,17 +46,25 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
         return;
       } catch (err) {
         const name = err instanceof DOMException ? err.name : "";
-        // If permission denied or no device, don't try simpler constraints — it won't help
-        if (name === "NotAllowedError" || name === "NotFoundError") {
-          if (name === "NotAllowedError") {
-            setError(
-              "Camera access blocked. Click the lock/settings icon in your browser's address bar, set Camera and Microphone to \"Allow\", then reload this page."
-            );
-          } else {
-            setError(
-              "No camera found. Make sure your device has a camera, no other app is using it, then try again."
-            );
-          }
+        // Terminal errors — simpler constraints won't help
+        if (name === "NotAllowedError") {
+          setError(
+            "Camera access blocked. Click the lock/settings icon in your browser's address bar, set Camera and Microphone to \"Allow\", then reload this page."
+          );
+          setPhase("idle");
+          return;
+        }
+        if (name === "NotReadableError") {
+          setError(
+            "Your camera is being used by another app or tab. Close it, then tap \"Try again\" below."
+          );
+          setPhase("idle");
+          return;
+        }
+        if (name === "NotFoundError") {
+          setError(
+            "No camera detected. Make sure nothing else is using your camera, then tap \"Try again\" below."
+          );
           setPhase("idle");
           return;
         }
@@ -67,7 +75,7 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
 
     // All attempts failed
     setError(
-      "Could not access your camera. Try closing other apps that use the camera, then reload this page."
+      "Could not access your camera. Close other apps using the camera, then tap \"Try again\" below."
     );
     setPhase("idle");
   }, [setPhase, setError]);
