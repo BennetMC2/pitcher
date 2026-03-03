@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -17,25 +17,32 @@ import {
   Upload,
   Mic,
   AlertCircle,
+  Sparkles,
 } from "lucide-react";
 
 interface RecordingStudioProps {
   maxSeconds: number;
   canRecord: boolean;
   onUpgradeNeeded: () => void;
+  goal?: string | null;
+  mode?: "authenticated" | "anonymous";
+  onAuthRequired?: () => void;
 }
 
 export function RecordingStudio({
   maxSeconds,
   canRecord,
   onUpgradeNeeded,
+  goal,
+  mode = "authenticated",
+  onAuthRequired,
 }: RecordingStudioProps) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const reviewVideoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  const { phase, countdownValue, recordingSeconds, videoBlob, videoUrl, error } =
+  const { phase, countdownValue, recordingSeconds, videoUrl, error } =
     useRecordingStore();
 
   const { initCamera, startCountdown, stopRecording, retake, getStream } =
@@ -62,6 +69,10 @@ export function RecordingStudio({
   }, [videoUrl]);
 
   async function handleUseThis() {
+    if (mode === "anonymous" && onAuthRequired) {
+      onAuthRequired();
+      return;
+    }
     console.log("[RecordingStudio] Uploading with transcript length:", transcript.length, "transcript:", transcript.slice(0, 200));
     const result = await upload("Untitled Pitch", transcript);
     if (result) {
@@ -74,6 +85,8 @@ export function RecordingStudio({
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   const timeDisplay = `${mins}:${secs.toString().padStart(2, "0")}`;
+
+  const isStartDisabled = !goal && mode === "authenticated";
 
   // ── IDLE ──────────────────────────────────────────────────────────────────
   if (phase === "idle") {
@@ -98,10 +111,11 @@ export function RecordingStudio({
         <Button
           size="lg"
           onClick={canRecord ? initCamera : onUpgradeNeeded}
+          disabled={isStartDisabled}
           className="gap-2"
         >
           <Mic className="h-4 w-4" />
-          {canRecord ? "Start recording" : "Upgrade to record"}
+          {canRecord ? (isStartDisabled ? "Select a pitch type first" : "Start recording") : "Upgrade to record"}
         </Button>
       </div>
     );
@@ -140,10 +154,12 @@ export function RecordingStudio({
           <Button onClick={handleUseThis} disabled={uploading} className="flex-1 gap-2">
             {uploading ? (
               <LoadingSpinner className="h-4 w-4" />
+            ) : mode === "anonymous" ? (
+              <Sparkles className="h-4 w-4" />
             ) : (
               <Upload className="h-4 w-4" />
             )}
-            Use this pitch
+            {mode === "anonymous" ? "See my results" : "Use this pitch"}
           </Button>
         </div>
         {error && (

@@ -1,3 +1,5 @@
+export type PitchGoal = "startup_pitch" | "sales_pitch" | "job_interview" | "conference_talk" | "general";
+
 export const FREE_PITCH_LIMIT = 3;
 export const FREE_MAX_RECORDING_SECONDS = 120; // 2 minutes
 export const PAID_MAX_RECORDING_SECONDS = 300; // 5 minutes

@@ -31,6 +31,8 @@ export interface StoryStructure {
   has_ask: boolean;
   structure_notes: string;
   missing_elements: string[];
+  has_hook?: boolean;
+  hook_notes?: string;
 }
 
 export interface BodyLanguageAnalysis {

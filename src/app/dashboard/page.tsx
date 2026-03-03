@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -5,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { SessionList } from "@/components/dashboard/SessionList";
 import { ProgressChart } from "@/components/dashboard/ProgressChart";
 import { UsageBadge } from "@/components/shared/UsageBadge";
-import { Plus } from "lucide-react";
+import { AutoBuyHandler } from "@/components/dashboard/AutoBuyHandler";
+import { Plus, GitCompareArrows } from "lucide-react";
 import type { Database } from "@/types/database.types";
 
 type SessionWithFeedback = Database["public"]["Tables"]["pitch_sessions"]["Row"] & {
@@ -65,8 +67,15 @@ export default async function DashboardPage() {
       label: `#${i + 1}`,
     }));
 
+  const completedCount = sessions.filter((s) => s.status === "complete").length;
+
   return (
     <div className="space-y-8">
+      {/* Auto-buy handler (reads autoBuy from searchParams) */}
+      <Suspense>
+        <AutoBuyHandler />
+      </Suspense>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -78,6 +87,14 @@ export default async function DashboardPage() {
             pitchesUsed={subscription?.pitches_used ?? 0}
             credits={subscription?.credits ?? 0}
           />
+          {completedCount >= 2 && (
+            <Button variant="outline" asChild>
+              <Link href="/dashboard/compare">
+                <GitCompareArrows className="mr-1.5 h-4 w-4" />
+                Compare pitches
+              </Link>
+            </Button>
+          )}
           <Button asChild>
             <Link href="/dashboard/record">
               <Plus className="mr-1.5 h-4 w-4" />

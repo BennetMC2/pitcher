@@ -10,7 +10,7 @@ interface UploadResult {
 export function useUpload() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { videoBlob, mediaPipeFrames, recordingSeconds, setSessionId, setPhase, setError: storeSetError } =
+  const { videoBlob, mediaPipeFrames, recordingSeconds, goal, setSessionId, setPhase, setError: storeSetError } =
     useRecordingStore();
 
   async function upload(title = "Untitled Pitch", browserTranscript?: string): Promise<UploadResult | null> {
@@ -27,7 +27,7 @@ export function useUpload() {
       const sessionRes = await fetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, duration_seconds: recordingSeconds }),
+        body: JSON.stringify({ title, duration_seconds: recordingSeconds, goal: goal ?? "startup_pitch" }),
       });
 
       if (!sessionRes.ok) {

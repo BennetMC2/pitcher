@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, XCircle, Lock } from "lucide-react";
 import type { VerbalAnalysis, StoryStructure, BodyLanguageAnalysis } from "@/types/feedback.types";
+import type { PitchGoal } from "@/lib/constants";
+import { getStructureConfig } from "@/lib/goalConfig";
 import Link from "next/link";
 
 // ── Verbal Card ────────────────────────────────────────────────────────────
@@ -86,28 +88,62 @@ export function VerbalCard({ verbal }: { verbal: VerbalAnalysis }) {
 
 // ── Story Structure Card ────────────────────────────────────────────────────
 
-const elements = [
+const defaultElements = [
   { key: "has_problem", label: "Problem", desc: "Clear pain point articulated" },
   { key: "has_solution", label: "Solution", desc: "Product/solution explained" },
   { key: "has_traction", label: "Traction", desc: "Evidence of validation" },
   { key: "has_ask", label: "Ask", desc: "Specific request from audience" },
 ] as const;
 
-export function StoryStructureCard({ structure }: { structure: StoryStructure }) {
-  const count = elements.filter((e) => structure[e.key]).length;
+interface StoryStructureCardProps {
+  structure: StoryStructure;
+  goal?: PitchGoal;
+}
+
+export function StoryStructureCard({ structure, goal }: StoryStructureCardProps) {
+  const config = goal ? getStructureConfig(goal) : null;
+
+  const elements = config
+    ? config.elements.map((el) => ({
+        key: el.key as keyof StoryStructure,
+        label: el.label,
+        desc: el.aiDescription.replace(/^Does the (pitch|speaker|talk) /, "").replace(/\?$/, ""),
+      }))
+    : defaultElements.map((el) => ({ ...el, key: el.key as keyof StoryStructure }));
+
+  const structKeys = elements.map((e) => e.key);
+  const count = structKeys.filter((k) => structure[k]).length;
+  const totalElements = elements.length + (structure.has_hook !== undefined ? 1 : 0);
+  const totalPresent = count + (structure.has_hook ? 1 : 0);
 
   return (
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Story Structure</CardTitle>
-          <Badge variant={count === 4 ? "default" : "secondary"}>
-            {count}/4 elements
+          <Badge variant={totalPresent === totalElements ? "default" : "secondary"}>
+            {totalPresent}/{totalElements} elements
           </Badge>
         </div>
-        <Progress value={(count / 4) * 100} className="h-1.5" />
+        <Progress value={(totalPresent / totalElements) * 100} className="h-1.5" />
       </CardHeader>
       <CardContent className="space-y-3">
+        {/* Emotional hook (shown first if available) */}
+        {structure.has_hook !== undefined && (
+          <div className="flex items-center gap-3">
+            {structure.has_hook ? (
+              <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+            ) : (
+              <XCircle className="h-4 w-4 text-red-400 shrink-0" />
+            )}
+            <div>
+              <span className="text-sm font-medium">Emotional Hook</span>
+              <span className="text-xs text-muted-foreground ml-2">Attention-grabbing opening</span>
+            </div>
+          </div>
+        )}
+
+        {/* Goal-aware structure elements */}
         {elements.map((el) => {
           const present = structure[el.key];
           return (
@@ -124,6 +160,15 @@ export function StoryStructureCard({ structure }: { structure: StoryStructure })
             </div>
           );
         })}
+
+        {/* Hook notes */}
+        {structure.hook_notes && (
+          <p className="text-sm text-muted-foreground pt-1 border-t">
+            <span className="font-medium text-foreground">Hook: </span>
+            {structure.hook_notes}
+          </p>
+        )}
+
         <p className="text-sm text-muted-foreground pt-1">{structure.structure_notes}</p>
       </CardContent>
     </Card>

@@ -9,6 +9,7 @@ import {
 } from "@/lib/ai/analyzeBodyLanguage";
 import { buildOverallFeedback } from "@/lib/ai/buildFeedback";
 import { STORAGE_BUCKET } from "@/lib/constants";
+import type { PitchGoal } from "@/lib/constants";
 import type { MediaPipeFrameData } from "@/types/feedback.types";
 
 export const maxDuration = 300;
@@ -27,10 +28,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing sessionId" }, { status: 400 });
   }
 
-  // Verify session ownership and get is_paid flag
+  // Verify session ownership and get is_paid flag + goal
   const { data: sessionData } = await service
     .from("pitch_sessions")
-    .select("id, video_path, body_language_raw, duration_seconds, is_paid")
+    .select("id, video_path, body_language_raw, duration_seconds, is_paid, goal")
     .eq("id", sessionId)
     .eq("user_id", user.id)
     .single();
@@ -73,6 +74,7 @@ interface SessionRow {
   body_language_raw: unknown;
   duration_seconds: number | null;
   is_paid: boolean;
+  goal: string;
 }
 
 async function runPipeline(
@@ -83,7 +85,8 @@ async function runPipeline(
 ) {
   const sessionId = session.id;
   const isPaid = session.is_paid;
-  console.log("[analyze] Starting pipeline for session:", sessionId, "isPaid:", isPaid);
+  const goal = (session.goal || "startup_pitch") as PitchGoal;
+  console.log("[analyze] Starting pipeline for session:", sessionId, "isPaid:", isPaid, "goal:", goal);
 
   // ── Step 1-2: Get transcript ──────────────────────────────────────────────
   let transcript: string;
@@ -126,7 +129,7 @@ async function runPipeline(
 
   const [verbal, structure, bodyLanguage] = await Promise.all([
     analyzeVerbalDelivery(transcript, duration),
-    analyzeStoryStructure(transcript),
+    analyzeStoryStructure(transcript, goal),
     shouldAnalyzeBodyLanguage
       ? analyzeBodyLanguage(rawFrames)
       : Promise.resolve(defaultBodyLanguageAnalysis()),
@@ -141,7 +144,8 @@ async function runPipeline(
     verbal,
     structure,
     bodyLanguage,
-    !isPaid // skipScript for free pitches
+    !isPaid, // skipScript for free pitches
+    goal
   );
 
   console.log("[analyze] Synthesis done. Score:", overall.overall_score);
@@ -164,6 +168,8 @@ async function runPipeline(
     has_ask: structure.has_ask,
     structure_notes: structure.structure_notes,
     missing_elements: structure.missing_elements,
+    has_hook: structure.has_hook ?? null,
+    hook_notes: structure.hook_notes ?? null,
     eye_contact_pct: bodyLanguage.eye_contact_pct,
     posture_score: bodyLanguage.posture_score,
     gesture_score: bodyLanguage.gesture_score,

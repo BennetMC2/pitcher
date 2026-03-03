@@ -6,21 +6,21 @@ const steps = [
     step: "01",
     title: "Record your pitch",
     description:
-      "Hit record and deliver your 60-second elevator pitch. Our AI watches your delivery and body language in real-time.",
+      "Hit record. Pitch like it's the real thing. No scripts. No second chances.",
   },
   {
     icon: Cpu,
     step: "02",
     title: "AI analyzes everything",
     description:
-      "Claude AI dissects your verbal delivery, story structure (problem→solution→traction→ask), pacing, filler words, and body language.",
+      "Our AI rips apart your delivery — filler words, pacing, story gaps, body language. Nothing hides.",
   },
   {
     icon: TrendingUp,
     step: "03",
     title: "Get actionable feedback",
     description:
-      "Receive a confidence score, grade, your top strengths, and prioritized coaching tips to improve before the real thing.",
+      "Get your confidence score, a rewritten script, and the 3 things to fix before you walk in that room.",
   },
 ];
 

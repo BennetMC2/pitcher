@@ -3,16 +3,21 @@
 import { useState, useEffect } from "react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { RecordingStudio } from "@/components/record/RecordingStudio";
+import { GoalSelector } from "@/components/record/GoalSelector";
+import { PreRecordingTips } from "@/components/record/PreRecordingTips";
 import { UpgradeModal } from "@/components/shared/UpgradeModal";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { Badge } from "@/components/ui/badge";
 import { Coins } from "lucide-react";
 import { useRecordingStore } from "@/store/recordingStore";
+import type { PitchGoal } from "@/lib/constants";
 
 export default function RecordPage() {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const { canRecord, maxSeconds, nextPitchIsPaid, loading } = useSubscription();
   const reset = useRecordingStore((s) => s.reset);
+  const goal = useRecordingStore((s) => s.goal);
+  const setGoal = useRecordingStore((s) => s.setGoal);
 
   // Reset recording state when navigating to this page
   useEffect(() => {
@@ -45,10 +50,15 @@ export default function RecordPage() {
           )}
         </div>
 
+        <GoalSelector selected={goal} onSelect={setGoal} />
+
+        {goal && <PreRecordingTips goal={goal} />}
+
         <RecordingStudio
           maxSeconds={maxSeconds}
           canRecord={canRecord}
           onUpgradeNeeded={() => setUpgradeOpen(true)}
+          goal={goal}
         />
       </div>
 

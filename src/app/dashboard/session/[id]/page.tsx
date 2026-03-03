@@ -11,14 +11,17 @@ import { CoachingTips } from "@/components/feedback/CoachingTips";
 import { SuggestedScript } from "@/components/feedback/SuggestedScript";
 import { SessionPollingWrapper } from "./SessionPollingWrapper";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, GitCompareArrows } from "lucide-react";
 import type {
   WordTimestamp,
   FillerWord,
   PriorityImprovement,
 } from "@/types/feedback.types";
+import type { PitchGoal } from "@/lib/constants";
+import { getGoalLabel } from "@/lib/goalConfig";
 import { formatDistanceToNow } from "date-fns";
 
 export default async function SessionPage({
@@ -42,7 +45,7 @@ export default async function SessionPage({
 
   if (!sessionRes) notFound();
 
-  // Cast to typed objects — read is_paid directly from session
+  // Cast to typed objects — read is_paid and goal directly from session
   const session = sessionRes as unknown as {
     id: string;
     title: string;
@@ -50,9 +53,11 @@ export default async function SessionPage({
     created_at: string;
     duration_seconds: number | null;
     is_paid: boolean;
+    goal: string;
     feedback: Record<string, unknown> | null;
   };
   const isPaid = session.is_paid;
+  const goal = (session.goal || "startup_pitch") as PitchGoal;
 
   // Still processing
   if (session.status === "processing" || session.status === "uploading") {
@@ -91,7 +96,7 @@ export default async function SessionPage({
   const rawFb = session.feedback;
   if (!rawFb) notFound();
 
-  // Fully typed feedback object — no unknown values escape into JSX
+  // Fully typed feedback object
   const fb = rawFb as {
     overall_score: number;
     grade: string;
@@ -109,6 +114,8 @@ export default async function SessionPage({
     has_ask: boolean;
     structure_notes: string;
     missing_elements: string[];
+    has_hook: boolean | null;
+    hook_notes: string | null;
     eye_contact_pct: number;
     posture_score: number;
     gesture_score: number;
@@ -133,6 +140,8 @@ export default async function SessionPage({
     has_ask: fb.has_ask,
     structure_notes: fb.structure_notes,
     missing_elements: fb.missing_elements ?? [],
+    has_hook: fb.has_hook ?? undefined,
+    hook_notes: fb.hook_notes ?? undefined,
   };
 
   const bodyLanguage = {
@@ -152,7 +161,12 @@ export default async function SessionPage({
         </Button>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">{session.title}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold">{session.title}</h1>
+              <Badge variant="outline" className="text-xs">
+                {getGoalLabel(goal)}
+              </Badge>
+            </div>
             <p className="text-sm text-muted-foreground">
               {formatDistanceToNow(new Date(session.created_at), {
                 addSuffix: true,
@@ -161,9 +175,17 @@ export default async function SessionPage({
                 ` · ${Math.round(session.duration_seconds)}s`}
             </p>
           </div>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/dashboard/record">Record another</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/dashboard/compare?a=${session.id}`}>
+                <GitCompareArrows className="mr-1.5 h-4 w-4" />
+                Compare
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/dashboard/record">Record another</Link>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -187,7 +209,7 @@ export default async function SessionPage({
       {/* Analysis cards */}
       <div className="grid gap-4 md:grid-cols-2">
         <VerbalCard verbal={verbal} />
-        <StoryStructureCard structure={structure} />
+        <StoryStructureCard structure={structure} goal={goal} />
       </div>
 
       <BodyLanguageCard bodyLanguage={bodyLanguage} isPro={isPaid} />

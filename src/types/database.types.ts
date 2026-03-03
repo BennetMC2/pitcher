@@ -61,6 +61,7 @@ export interface Database {
           body_language_raw: Json | null;
           duration_seconds: number | null;
           is_paid: boolean;
+          goal: string;
           created_at: string;
           updated_at: string;
         };
@@ -73,6 +74,7 @@ export interface Database {
           body_language_raw?: Json | null;
           duration_seconds?: number | null;
           is_paid?: boolean;
+          goal?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -85,6 +87,7 @@ export interface Database {
           body_language_raw?: Json | null;
           duration_seconds?: number | null;
           is_paid?: boolean;
+          goal?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -118,6 +121,8 @@ export interface Database {
           top_strengths: string[] | null;
           priority_improvements: Json | null;
           suggested_script: string | null;
+          has_hook: boolean | null;
+          hook_notes: string | null;
         };
         Insert: {
           id?: string;
@@ -146,6 +151,8 @@ export interface Database {
           top_strengths?: string[] | null;
           priority_improvements?: Json | null;
           suggested_script?: string | null;
+          has_hook?: boolean | null;
+          hook_notes?: string | null;
         };
         Update: {
           id?: string;
@@ -174,6 +181,8 @@ export interface Database {
           top_strengths?: string[] | null;
           priority_improvements?: Json | null;
           suggested_script?: string | null;
+          has_hook?: boolean | null;
+          hook_notes?: string | null;
         };
         Relationships: [];
       };

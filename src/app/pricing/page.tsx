@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Coins, Loader2, Mic2 } from "lucide-react";
 import { CREDIT_PACKS } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 
 const freeFeatures = [
   "3 free pitches (lifetime)",
@@ -24,10 +26,27 @@ const creditFeatures = [
 ];
 
 export default function PricingPage() {
+  const router = useRouter();
   const [loadingPack, setLoadingPack] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    async function checkAuth() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthed(!!user);
+    }
+    checkAuth();
+  }, []);
 
   async function handleBuy(packId: string) {
+    // If not authenticated, redirect to signup with purchase intent
+    if (!isAuthed) {
+      router.push(`/auth/signup?intent=purchase&pack=${packId}`);
+      return;
+    }
+
     setLoadingPack(packId);
     setError(null);
     try {
@@ -58,12 +77,21 @@ export default function PricingPage() {
             Nailed It
           </Link>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/auth/login">Log in</Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/auth/signup">Get started free</Link>
-            </Button>
+            {isAuthed === false && (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/auth/login">Log in</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/record">Record a pitch</Link>
+                </Button>
+              </>
+            )}
+            {isAuthed === true && (
+              <Button size="sm" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -87,7 +115,7 @@ export default function PricingPage() {
                 <span className="text-muted-foreground">/forever</span>
               </div>
               <Button variant="outline" className="mt-6 w-full" asChild>
-                <Link href="/auth/signup">Get started free</Link>
+                <Link href="/record">Record your first pitch</Link>
               </Button>
               <ul className="mt-8 space-y-3">
                 {freeFeatures.map((f) => (
@@ -152,6 +180,10 @@ export default function PricingPage() {
                   );
                 })}
               </div>
+
+              {error && (
+                <p className="mt-3 text-sm text-destructive text-center">{error}</p>
+              )}
 
               <ul className="mt-8 space-y-3">
                 {creditFeatures.map((f) => (

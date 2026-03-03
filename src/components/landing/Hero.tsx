@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Play, Star } from "lucide-react";
+import { ArrowRight, Play, TrendingUp } from "lucide-react";
 
 export function Hero() {
   return (
@@ -16,26 +16,25 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-5xl px-6 text-center">
         <Badge variant="secondary" className="mb-6 gap-1.5 px-3 py-1">
-          <Star className="h-3 w-3 fill-current" />
-          Used by 500+ founders
+          <TrendingUp className="h-3 w-3" />
+          2,000+ pitches analyzed
         </Badge>
 
         <h1 className="text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-          Nail your pitch.
+          You get one shot.
           <br />
-          <span className="text-primary">Every time.</span>
+          <span className="text-primary">Nail it.</span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-xl text-muted-foreground">
-          Record your 60-second elevator pitch. Get instant AI feedback on
-          verbal delivery, body language, story structure, and confidence score
-          — before your investor meeting.
+          Stats say you get 7 seconds to make an impression. Our AI coaches you
+          to make every second count.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Button size="lg" asChild className="gap-2 text-base px-8">
-            <Link href="/auth/signup">
-              Start for free <ArrowRight className="h-4 w-4" />
+            <Link href="/record">
+              Record your first pitch free <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button size="lg" variant="outline" asChild className="gap-2 text-base">
@@ -47,7 +46,7 @@ export function Hero() {
         </div>
 
         <p className="mt-4 text-sm text-muted-foreground">
-          3 free pitches included · No credit card required
+          No sign-up required · 3 free pitches included
         </p>
 
         {/* Mockup preview */}

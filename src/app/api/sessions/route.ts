@@ -54,9 +54,9 @@ export async function POST(request: Request) {
   const isPaid = !hasFreeLeft;
 
   const body = await request.json();
-  const { title = "Untitled Pitch", duration_seconds } = body;
+  const { title = "Untitled Pitch", duration_seconds, goal = "startup_pitch" } = body;
 
-  // Create session row with is_paid flag
+  // Create session row with is_paid flag and goal
   const { data: session, error: sessionError } = await service
     .from("pitch_sessions")
     .insert({
@@ -65,6 +65,7 @@ export async function POST(request: Request) {
       duration_seconds,
       status: "uploading",
       is_paid: isPaid,
+      goal,
     })
     .select()
     .single();

@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { VerbalAnalysis, StoryStructure } from "@/types/feedback.types";
+import type { PitchGoal } from "@/lib/constants";
+import { getStructureConfig } from "@/lib/goalConfig";
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -87,69 +89,87 @@ Be accurate when identifying filler words — only count words that appear in th
   return { ...input, wpm: calculatedWpm };
 }
 
-// ── Story Structure ──────────────────────────────────────────────────────────
+// ── Story Structure (Goal-Aware + Hook Detection) ────────────────────────────
 
-const structureTool: Anthropic.Tool = {
-  name: "story_structure",
-  description: "Analyze startup pitch story structure",
-  input_schema: {
-    type: "object" as const,
-    properties: {
-      has_problem: {
-        type: "boolean",
-        description: "Does the pitch clearly articulate the problem being solved?",
+function buildStructureTool(goal: PitchGoal): Anthropic.Tool {
+  const config = getStructureConfig(goal);
+
+  const properties: Record<string, unknown> = {};
+  for (const el of config.elements) {
+    properties[el.key] = {
+      type: "boolean",
+      description: el.aiDescription,
+    };
+  }
+
+  return {
+    name: "story_structure",
+    description: `Analyze pitch story structure for a ${goal.replace(/_/g, " ")}`,
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        ...properties,
+        has_hook: {
+          type: "boolean",
+          description: "Does the pitch open with an emotional hook — a surprising stat, provocative question, bold claim, or personal anecdote — as opposed to a flat or generic introduction?",
+        },
+        hook_notes: {
+          type: "string",
+          description: "1-2 sentence assessment of the opening hook. If present, describe what kind it is and why it works. If absent, explain what's missing and suggest a specific hook.",
+        },
+        structure_notes: {
+          type: "string",
+          description: "2-3 sentence assessment of the narrative flow. What works, what's missing, how the story lands.",
+        },
+        missing_elements: {
+          type: "array",
+          items: { type: "string" },
+          description: "List of missing or weak narrative elements with brief explanation of why each matters",
+        },
       },
-      has_solution: {
-        type: "boolean",
-        description: "Does the pitch explain the solution/product?",
-      },
-      has_traction: {
-        type: "boolean",
-        description: "Does the pitch mention traction, metrics, users, revenue, or validation?",
-      },
-      has_ask: {
-        type: "boolean",
-        description: "Does the pitch include a clear ask (funding amount, partnerships, intro requests)?",
-      },
-      structure_notes: {
-        type: "string",
-        description: "2-3 sentence assessment of the narrative flow. What works, what's missing, how the story lands.",
-      },
-      missing_elements: {
-        type: "array",
-        items: { type: "string" },
-        description: "List of missing or weak narrative elements with brief explanation of why each matters",
-      },
+      required: [
+        ...config.elements.map((e) => e.key),
+        "has_hook",
+        "hook_notes",
+        "structure_notes",
+        "missing_elements",
+      ],
     },
-    required: ["has_problem", "has_solution", "has_traction", "has_ask", "structure_notes", "missing_elements"],
-  },
-};
+  };
+}
 
 export async function analyzeStoryStructure(
-  transcript: string
+  transcript: string,
+  goal: PitchGoal = "startup_pitch"
 ): Promise<StoryStructure> {
+  const config = getStructureConfig(goal);
+  const tool = buildStructureTool(goal);
+
+  const elementsList = config.elements
+    .map((el, i) => `${i + 1}. ${el.label.toUpperCase()} — ${el.aiDescription}`)
+    .join("\n");
+
   const response = await getAnthropic().messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 1024,
-    tools: [structureTool],
+    tools: [tool],
     tool_choice: { type: "tool", name: "story_structure" },
     messages: [
       {
         role: "user",
-        content: `You are an expert startup pitch coach and former VC analyst. Analyze the narrative structure of this elevator pitch for investors.
+        content: `${config.aiPromptContext}
 
-Evaluate whether the pitch covers the four essential startup pitch elements:
-1. PROBLEM — Is there a clear, compelling problem statement?
-2. SOLUTION — Is there a crisp explanation of the product/solution?
-3. TRACTION — Is there evidence of real-world validation (users, revenue, partnerships, pilots)?
-4. ASK — Is there a specific ask from the audience (funding, intros, partnerships)?
+Evaluate whether the pitch covers these essential elements:
+${elementsList}
+
+Also evaluate whether the pitch opens with an emotional hook — a surprising stat, provocative question, bold claim, or personal anecdote — as opposed to a flat introduction like "Hi, I'm..." or "Today I want to talk about...".
 
 TRANSCRIPT:
 """
 ${transcript}
 """
 
-Be honest and specific. Many pitches skip the ask or bury the problem. Use the story_structure tool.`,
+Be honest and specific. Use the story_structure tool.`,
       },
     ],
   });

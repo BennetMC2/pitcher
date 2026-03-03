@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { RecordingPhase, MediaPipeFrameData } from "@/types/feedback.types";
+import type { PitchGoal } from "@/lib/constants";
 
 interface RecordingStore {
   phase: RecordingPhase;
@@ -10,6 +11,7 @@ interface RecordingStore {
   mediaPipeFrames: MediaPipeFrameData[];
   sessionId: string | null;
   error: string | null;
+  goal: PitchGoal | null;
 
   setPhase: (phase: RecordingPhase) => void;
   setCountdownValue: (v: number) => void;
@@ -18,6 +20,7 @@ interface RecordingStore {
   addFrame: (frame: MediaPipeFrameData) => void;
   setSessionId: (id: string) => void;
   setError: (err: string | null) => void;
+  setGoal: (goal: PitchGoal) => void;
   reset: () => void;
 }
 
@@ -25,11 +28,12 @@ const initialState = {
   phase: "idle" as RecordingPhase,
   countdownValue: 5,
   recordingSeconds: 0,
-  videoBlob: null,
-  videoUrl: null,
-  mediaPipeFrames: [],
-  sessionId: null,
-  error: null,
+  videoBlob: null as Blob | null,
+  videoUrl: null as string | null,
+  mediaPipeFrames: [] as MediaPipeFrameData[],
+  sessionId: null as string | null,
+  error: null as string | null,
+  goal: null as PitchGoal | null,
 };
 
 export const useRecordingStore = create<RecordingStore>((set) => ({
@@ -45,5 +49,6 @@ export const useRecordingStore = create<RecordingStore>((set) => ({
     })),
   setSessionId: (id) => set({ sessionId: id }),
   setError: (err) => set({ error: err }),
+  setGoal: (goal) => set({ goal }),
   reset: () => set(initialState),
 }));

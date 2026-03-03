@@ -26,6 +26,16 @@ export function Testimonials() {
   return (
     <section className="py-24 bg-muted/30">
       <div className="mx-auto max-w-5xl px-6">
+        {/* Stat bar */}
+        <div className="mb-12 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border bg-background px-6 py-2.5 shadow-sm">
+            <span className="text-2xl font-bold text-primary">89%</span>
+            <span className="text-sm text-muted-foreground">
+              of users improved their score by their second pitch
+            </span>
+          </div>
+        </div>
+
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Founders who pitched better

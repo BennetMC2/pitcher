@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -20,8 +20,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const intent = searchParams.get("intent");
+  const pack = searchParams.get("pack");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState(false);
@@ -31,6 +34,14 @@ export default function SignupPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  // Build the redirect URL based on intent
+  function getRedirectPath() {
+    if (intent === "purchase" && pack) {
+      return `/dashboard?autoBuy=${pack}`;
+    }
+    return "/dashboard";
+  }
 
   async function onSubmit(data: FormData) {
     setLoading(true);
@@ -50,7 +61,7 @@ export default function SignupPage() {
       return;
     }
     if (authData?.session) {
-      router.push("/dashboard");
+      router.push(getRedirectPath());
       return;
     }
     setVerifyEmail(true);
@@ -59,10 +70,15 @@ export default function SignupPage() {
 
   async function signUpWithGoogle() {
     const supabase = createClient();
+    // Preserve intent through OAuth redirect
+    const callbackUrl = new URL(`${window.location.origin}/auth/callback`);
+    if (intent === "purchase" && pack) {
+      callbackUrl.searchParams.set("next", `/dashboard?autoBuy=${pack}`);
+    }
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl.toString(),
       },
     });
   }
@@ -103,7 +119,9 @@ export default function SignupPage() {
           </Link>
           <h1 className="mt-4 text-2xl font-bold">Create your account</h1>
           <p className="mt-1 text-muted-foreground">
-            3 free pitches included. No card required.
+            {intent === "purchase"
+              ? "Sign up to complete your purchase"
+              : "3 free pitches included. No card required."}
           </p>
         </div>
 
@@ -178,5 +196,13 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense>
+      <SignupForm />
+    </Suspense>
   );
 }

@@ -52,7 +52,7 @@ export function PricingSection() {
             </ul>
 
             <Button className="mt-8 w-full" variant="outline" size="lg" asChild>
-              <Link href="/auth/signup">Get started free</Link>
+              <Link href="/record">Record your first pitch</Link>
             </Button>
           </div>
 
@@ -104,7 +104,7 @@ export function PricingSection() {
             </ul>
 
             <Button className="mt-8 w-full" size="lg" asChild>
-              <Link href="/auth/signup">Get started free</Link>
+              <Link href="/pricing">Buy credits</Link>
             </Button>
           </div>
         </div>

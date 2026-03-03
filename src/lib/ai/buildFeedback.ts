@@ -6,6 +6,8 @@ import type {
   OverallFeedback,
 } from "@/types/feedback.types";
 import { scoreToGrade } from "@/lib/constants";
+import type { PitchGoal } from "@/lib/constants";
+import { getStructureConfig, getGoalLabel } from "@/lib/goalConfig";
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -84,8 +86,12 @@ export async function buildOverallFeedback(
   verbal: VerbalAnalysis,
   structure: StoryStructure,
   bodyLanguage: BodyLanguageAnalysis,
-  skipScript?: boolean
+  skipScript?: boolean,
+  goal: PitchGoal = "startup_pitch"
 ): Promise<OverallFeedback> {
+  const config = getStructureConfig(goal);
+  const goalLabel = getGoalLabel(goal);
+
   const structureScore =
     [
       structure.has_problem,
@@ -93,6 +99,13 @@ export async function buildOverallFeedback(
       structure.has_traction,
       structure.has_ask,
     ].filter(Boolean).length;
+
+  // Build structure section with goal-aware labels
+  const structureLines = config.elements.map((el, i) => {
+    const key = el.key as keyof StoryStructure;
+    const present = structure[key];
+    return `- ${present ? "✅" : "❌"} ${el.label}: ${present ? "Present" : "MISSING"}`;
+  });
 
   // When skipScript is true, use a tool that doesn't include suggested_script
   const tool = skipScript
@@ -110,6 +123,10 @@ export async function buildOverallFeedback(
       }
     : synthesisTool;
 
+  const goalContext = goal !== "startup_pitch"
+    ? `\n\nIMPORTANT CONTEXT: You are coaching someone preparing for a ${goalLabel}. Tailor your coaching tips, strengths, and suggested script to this specific context. Use language and advice relevant to a ${goalLabel.toLowerCase()} setting.`
+    : "";
+
   const response = await getAnthropic().messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 2048,
@@ -118,9 +135,9 @@ export async function buildOverallFeedback(
     messages: [
       {
         role: "user",
-        content: `You are a world-class startup pitch coach who has helped founders raise over $500M. You've sat on both sides of the table — as a founder and as a VC.
+        content: `You are a world-class pitch coach who has helped thousands of people communicate more effectively. You've coached startup founders, salespeople, job candidates, and conference speakers.${goalContext}
 
-Synthesize the following analysis of a founder's elevator pitch and provide your overall assessment and prioritized coaching. Be honest, specific, and actionable. Avoid generic advice.
+Synthesize the following analysis of a ${goalLabel.toLowerCase()} and provide your overall assessment and prioritized coaching. Be honest, specific, and actionable. Avoid generic advice.
 
 ## TRANSCRIPT
 """
@@ -138,14 +155,11 @@ ${transcript}
 - Conciseness: ${verbal.conciseness}
 - Pacing: ${verbal.pacing_assessment}
 
-## STORY STRUCTURE (4/4 elements needed)
-- ✅/❌ Problem: ${structure.has_problem ? "Present" : "MISSING"}
-- ✅/❌ Solution: ${structure.has_solution ? "Present" : "MISSING"}
-- ✅/❌ Traction: ${structure.has_traction ? "Present" : "MISSING"}
-- ✅/❌ Ask: ${structure.has_ask ? "Present" : "MISSING"}
-- Elements present: ${structureScore}/4
+## STORY STRUCTURE (${structureScore}/4 elements)
+${structureLines.join("\n")}
 - Notes: ${structure.structure_notes}
 - Missing elements: ${structure.missing_elements.join(", ") || "None"}
+${structure.has_hook !== undefined ? `- Emotional Hook: ${structure.has_hook ? "Present" : "MISSING"} — ${structure.hook_notes ?? ""}` : ""}
 
 ## BODY LANGUAGE
 - Eye contact: ${bodyLanguage.eye_contact_pct}% of recording
@@ -153,7 +167,7 @@ ${transcript}
 - Gesture score: ${bodyLanguage.gesture_score}/100
 - Notes: ${bodyLanguage.body_language_notes}
 
-Use the confidence_synthesis tool to provide your final assessment. Focus on the 3-5 highest-impact improvements the founder should make before their next pitch.`,
+Use the confidence_synthesis tool to provide your final assessment. Focus on the 3-5 highest-impact improvements the speaker should make before their next ${goalLabel.toLowerCase()}.`,
       },
     ],
   });
