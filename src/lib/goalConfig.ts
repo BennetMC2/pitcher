@@ -33,6 +33,12 @@ export const PITCH_GOALS: GoalOption[] = [
     description: "Opening a talk or presentation",
   },
   {
+    id: "rizz_check",
+    label: "Rizz Check",
+    icon: "😏",
+    description: "Pitch yourself to a potential date",
+  },
+  {
     id: "general",
     label: "General",
     icon: "🗣️",
@@ -111,6 +117,21 @@ const configs: Record<PitchGoal, StructureConfig> = {
       "Open with a vivid story that brings the audience into the scene",
       "Ask the audience to imagine a specific scenario",
       "Present a startling statistic that reframes the topic",
+    ],
+  },
+  rizz_check: {
+    elements: [
+      { key: "has_problem", label: "The Hook", aiDescription: "Does the speaker open with a charming, funny, or intriguing hook that makes someone want to keep listening?" },
+      { key: "has_solution", label: "The Vibe", aiDescription: "Does the speaker convey genuine personality, warmth, and confidence — not arrogance?" },
+      { key: "has_traction", label: "The Proof", aiDescription: "Does the speaker share something specific and memorable about themselves — a passion, story, or quirk that makes them stand out?" },
+      { key: "has_ask", label: "The Close", aiDescription: "Does the speaker end with a smooth, clear next step — asking for a number, suggesting a date, or leaving a lasting impression?" },
+    ],
+    aiPromptContext: "You are a brutally honest but supportive dating coach with a great sense of humor. Analyze this person's self-introduction as if they're trying to impress someone they just met at a bar, coffee shop, or dating event. Be fun and witty in your feedback.",
+    hookTips: [
+      "Open with a playful, unexpected question — not 'Hey, what's your name?'",
+      "Lead with a funny observation about the situation you're both in",
+      "Share a quick, charming story that shows your personality",
+      "Make a bold, confident statement with a smile — rizz is energy, not words",
     ],
   },
   general: {
