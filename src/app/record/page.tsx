@@ -95,6 +95,16 @@ function RecordPageInner() {
     setAuthModalOpen(true);
   }, []);
 
+  // When modal is dismissed without auth, restore review phase so user can retry
+  const handleAuthModalChange = useCallback((open: boolean) => {
+    setAuthModalOpen(open);
+    if (!open && videoBlob) {
+      // Modal closed without auth — make sure we're back in review
+      setPhase("review");
+      setError(null);
+    }
+  }, [videoBlob, setPhase, setError]);
+
   // Called when user successfully authenticates via email (no redirect)
   const handleAuthenticated = useCallback(async () => {
     setAuthModalOpen(false);
@@ -176,7 +186,7 @@ function RecordPageInner() {
 
       <AuthModal
         open={authModalOpen}
-        onOpenChange={setAuthModalOpen}
+        onOpenChange={handleAuthModalChange}
         onAuthenticated={handleAuthenticated}
         onBeforeOAuthRedirect={handleBeforeOAuthRedirect}
       />
