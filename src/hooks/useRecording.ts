@@ -31,8 +31,33 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
   const initCamera = useCallback(async () => {
     setError(null);
 
+    // Check if browser can see any camera devices at all
+    // On macOS, if Chrome doesn't have camera permission in System Settings,
+    // enumerateDevices returns zero videoinput devices.
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const hasVideo = devices.some((d) => d.kind === "videoinput");
+      const hasAudio = devices.some((d) => d.kind === "audioinput");
+      if (!hasVideo && !hasAudio) {
+        setError(
+          "Your browser can't see any cameras or microphones. On Mac, go to System Settings → Privacy & Security → Camera (and Microphone) and make sure your browser is enabled. Then restart your browser."
+        );
+        setPhase("idle");
+        return;
+      }
+      if (!hasVideo) {
+        setError(
+          "No camera visible to your browser. On Mac, check System Settings → Privacy & Security → Camera and make sure your browser is enabled. Then restart your browser."
+        );
+        setPhase("idle");
+        return;
+      }
+    } catch {
+      // enumerateDevices failed — continue and let getUserMedia handle it
+    }
+
     // Try progressively simpler constraints
-    const attempts = [
+    const attempts: MediaStreamConstraints[] = [
       { video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }, audio: true },
       { video: { facingMode: "user" }, audio: true },
       { video: true, audio: true },
@@ -63,7 +88,7 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
         }
         if (name === "NotFoundError") {
           setError(
-            "No camera detected. Make sure nothing else is using your camera, then tap \"Try again\" below."
+            "No camera detected. On Mac, check System Settings → Privacy & Security → Camera and make sure your browser is allowed. Then restart your browser and try again."
           );
           setPhase("idle");
           return;
