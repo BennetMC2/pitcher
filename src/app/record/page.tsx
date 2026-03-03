@@ -49,7 +49,7 @@ function RecordPageInner() {
     }
   }, [reset, shouldResume]);
 
-  // Handle resume after OAuth redirect — restore to review phase, don't auto-upload
+  // Handle resume after OAuth redirect — auto-upload if authed, else restore to review
   useEffect(() => {
     if (!shouldResume) return;
     localStorage.removeItem(RESUME_FLAG);
@@ -67,6 +67,22 @@ function RecordPageInner() {
         setVideoBlob(stored.blob, url);
         setGoal(stored.goal as PitchGoal);
         storedTranscriptRef.current = stored.transcript;
+
+        // If user is authenticated (OAuth succeeded), upload directly
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user) {
+          setPhase("uploading");
+          const result = await upload("Untitled Pitch", stored.transcript);
+          if (result) {
+            await clearRecordingBlob();
+            router.push(`/dashboard/session/${result.sessionId}`);
+            return;
+          }
+        }
+
+        // Not authed or upload failed — fall back to review phase
         setPhase("review");
       } catch (err) {
         console.error("Failed to restore recording:", err);
@@ -142,7 +158,7 @@ function RecordPageInner() {
       <div className="flex min-h-screen flex-col items-center justify-center gap-4">
         <LoadingSpinner className="h-10 w-10" />
         <div className="text-center">
-          <h2 className="text-xl font-semibold">Restoring your recording…</h2>
+          <h2 className="text-xl font-semibold">Uploading your pitch…</h2>
           <p className="text-muted-foreground">Just a moment.</p>
         </div>
       </div>
