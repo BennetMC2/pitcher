@@ -96,10 +96,12 @@ export function AuthModal({
       await onBeforeOAuthRedirect();
     }
     const supabase = createClient();
+    const callbackUrl = new URL(`${window.location.origin}/auth/callback`);
+    callbackUrl.searchParams.set("next", "/record?resume=true");
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/record?resume=true`,
+        redirectTo: callbackUrl.toString(),
       },
     });
   }

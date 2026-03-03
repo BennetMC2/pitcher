@@ -1,12 +1,26 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
+const RESUME_FLAG = "nailed-it-resume-recording";
 
 export function AutoBuyHandler() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const autoBuy = searchParams.get("autoBuy");
   const triggered = useRef(false);
+
+  // Check if user was mid-recording before OAuth redirect
+  // Supabase OAuth often drops custom query params, so user lands on /dashboard
+  // instead of /record?resume=true. This catches that case.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const shouldResume = localStorage.getItem(RESUME_FLAG);
+    if (shouldResume === "true") {
+      router.replace("/record?resume=true");
+    }
+  }, [router]);
 
   useEffect(() => {
     if (!autoBuy || triggered.current) return;
