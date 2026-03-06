@@ -23,12 +23,22 @@ interface ProgressChartProps {
 }
 
 export function ProgressChart({ data }: ProgressChartProps) {
-  if (data.length < 2) return null;
+  if (data.length === 0) return null;
+
+  const showChange = data.length >= 2;
+  const scoreChange = showChange ? data[data.length - 1].score - data[0].score : 0;
 
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Score over time</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base">Score over time</CardTitle>
+          {showChange && (
+            <span className={`text-sm font-semibold ${scoreChange > 0 ? "text-green-600" : scoreChange < 0 ? "text-red-600" : "text-muted-foreground"}`}>
+              {scoreChange > 0 ? "+" : ""}{scoreChange} pts
+            </span>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={180}>

@@ -1,14 +1,22 @@
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { PricingSection } from "@/components/landing/PricingSection";
-import { Testimonials } from "@/components/landing/Testimonials";
+import { MobileNav } from "@/components/landing/MobileNav";
 import { Mic2 } from "lucide-react";
+
+const Testimonials = dynamic(() => import("@/components/landing/Testimonials").then(m => m.Testimonials));
+const FeatureShowcase = dynamic(() => import("@/components/landing/FeatureShowcase").then(m => m.FeatureShowcase));
+const PricingSection = dynamic(() => import("@/components/landing/PricingSection").then(m => m.PricingSection));
+const ClosingCTA = dynamic(() => import("@/components/landing/ClosingCTA").then(m => m.ClosingCTA));
+const FAQ = dynamic(() => import("@/components/landing/FAQ").then(m => m.FAQ));
+const EmailCapture = dynamic(() => import("@/components/landing/EmailCapture").then(m => m.EmailCapture));
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col scroll-smooth">
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
@@ -29,8 +37,14 @@ export default function LandingPage() {
             >
               Pricing
             </Link>
+            <Link
+              href="#faq"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              FAQ
+            </Link>
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             <Button variant="ghost" size="sm" asChild>
               <Link href="/auth/login">Log in</Link>
             </Button>
@@ -38,14 +52,31 @@ export default function LandingPage() {
               <Link href="/record">Record a pitch</Link>
             </Button>
           </div>
+          <MobileNav />
         </div>
       </header>
 
       <main>
         <Hero />
         <HowItWorks />
-        <Testimonials />
-        <PricingSection />
+        <Suspense>
+          <Testimonials />
+        </Suspense>
+        <Suspense>
+          <FeatureShowcase />
+        </Suspense>
+        <Suspense>
+          <PricingSection />
+        </Suspense>
+        <Suspense>
+          <FAQ />
+        </Suspense>
+        <Suspense>
+          <ClosingCTA />
+        </Suspense>
+        <Suspense>
+          <EmailCapture />
+        </Suspense>
       </main>
 
       {/* Footer */}

@@ -51,14 +51,23 @@ export function CoachingTips({ strengths, improvements }: CoachingTipsProps) {
             const cat = categoryConfig[catKey] ?? categoryConfig.overall;
             const impact = impactConfig[impKey] ?? impactConfig.medium;
             const ImpactIcon = impact.icon;
+            const isFirst = i === 0;
             return (
-              <div key={i} className="space-y-1.5">
+              <div
+                key={i}
+                className={`space-y-1.5 ${isFirst ? "rounded-lg border border-primary/20 bg-primary/5 p-3 -mx-1" : ""}`}
+              >
                 <div className="flex items-center gap-2">
                   <ImpactIcon className={`h-3.5 w-3.5 shrink-0 ${impact.color}`} />
                   <Badge variant="secondary" className={`text-xs ${cat.color}`}>
                     {cat.label}
                   </Badge>
                   <span className="text-xs text-muted-foreground">{impact.label}</span>
+                  {isFirst && (
+                    <Badge variant="default" className="text-[10px] ml-auto">
+                      #1 Fix
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-sm pl-5">{imp.tip}</p>
               </div>

@@ -12,7 +12,8 @@ import { useUpload } from "@/hooks/useUpload";
 import { useTranscription } from "@/hooks/useTranscription";
 import { storeRecordingBlob, retrieveRecordingBlob, clearRecordingBlob } from "@/lib/storage/indexedDB";
 import { createClient } from "@/lib/supabase/client";
-import { Mic2 } from "lucide-react";
+import { Mic2, Shield, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { FREE_MAX_RECORDING_SECONDS } from "@/lib/constants";
@@ -192,6 +193,16 @@ function RecordPageInner() {
               Deliver your pitch to the camera. You have 2 minutes max.
               Sign up after to see your AI feedback.
             </p>
+            <div className="mt-3 flex items-center gap-3">
+              <Badge variant="secondary" className="gap-1.5 text-xs">
+                <TrendingUp className="h-3 w-3" />
+                2,000+ pitches analyzed
+              </Badge>
+              <Badge variant="secondary" className="gap-1.5 text-xs">
+                <Shield className="h-3 w-3" />
+                No credit card required
+              </Badge>
+            </div>
           </div>
 
           <GoalSelector selected={goal} onSelect={setGoal} />

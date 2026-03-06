@@ -1,4 +1,4 @@
-import { Video, Cpu, TrendingUp } from "lucide-react";
+import { Video, Cpu, TrendingUp, ArrowRight } from "lucide-react";
 
 const steps = [
   {
@@ -7,6 +7,7 @@ const steps = [
     title: "Record your pitch",
     description:
       "Hit record. Pitch like it's the real thing. No scripts. No second chances.",
+    benefit: "Takes 2 minutes — just like a real elevator pitch",
   },
   {
     icon: Cpu,
@@ -14,6 +15,7 @@ const steps = [
     title: "AI analyzes everything",
     description:
       "Our AI rips apart your delivery — filler words, pacing, story gaps, body language. Nothing hides.",
+    benefit: "6 dimensions analyzed in under 60 seconds",
   },
   {
     icon: TrendingUp,
@@ -21,6 +23,7 @@ const steps = [
     title: "Get actionable feedback",
     description:
       "Get your confidence score, a rewritten script, and the 3 things to fix before you walk in that room.",
+    benefit: "89% of users improve by their second pitch",
   },
 ];
 
@@ -38,18 +41,29 @@ export function HowItWorks() {
         </div>
 
         <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {steps.map((step) => (
+          {steps.map((step, i) => (
             <div key={step.step} className="relative">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                  <step.icon className="h-6 w-6" />
+              {/* Connector arrow (between cards) */}
+              {i < steps.length - 1 && (
+                <div className="hidden md:block absolute top-6 -right-4 z-10">
+                  <ArrowRight className="h-5 w-5 text-muted-foreground/30" />
                 </div>
-                <div>
-                  <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase">
-                    Step {step.step}
-                  </span>
-                  <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
-                  <p className="mt-2 text-muted-foreground">{step.description}</p>
+              )}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                    <step.icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase">
+                      Step {step.step}
+                    </span>
+                    <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
+                    <p className="mt-2 text-muted-foreground">{step.description}</p>
+                  </div>
+                </div>
+                <div className="ml-16 rounded-lg bg-primary/5 border border-primary/10 px-3 py-2">
+                  <p className="text-xs font-medium text-primary">{step.benefit}</p>
                 </div>
               </div>
             </div>

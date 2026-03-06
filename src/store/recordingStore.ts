@@ -12,6 +12,8 @@ interface RecordingStore {
   sessionId: string | null;
   error: string | null;
   goal: PitchGoal | null;
+  uploadProgress: number; // 0-100
+  uploadError: string | null;
 
   setPhase: (phase: RecordingPhase) => void;
   setCountdownValue: (v: number) => void;
@@ -21,6 +23,8 @@ interface RecordingStore {
   setSessionId: (id: string) => void;
   setError: (err: string | null) => void;
   setGoal: (goal: PitchGoal) => void;
+  setUploadProgress: (v: number) => void;
+  setUploadError: (err: string | null) => void;
   reset: () => void;
 }
 
@@ -34,6 +38,8 @@ const initialState = {
   sessionId: null as string | null,
   error: null as string | null,
   goal: null as PitchGoal | null,
+  uploadProgress: 0,
+  uploadError: null as string | null,
 };
 
 export const useRecordingStore = create<RecordingStore>((set) => ({
@@ -50,5 +56,7 @@ export const useRecordingStore = create<RecordingStore>((set) => ({
   setSessionId: (id) => set({ sessionId: id }),
   setError: (err) => set({ error: err }),
   setGoal: (goal) => set({ goal }),
+  setUploadProgress: (v) => set({ uploadProgress: v }),
+  setUploadError: (err) => set({ uploadError: err }),
   reset: () => set(initialState),
 }));

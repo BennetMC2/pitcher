@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { OverallScore } from "@/components/feedback/OverallScore";
+import { OverallScore, MiniStats } from "@/components/feedback/OverallScore";
 import { TranscriptViewer } from "@/components/feedback/TranscriptViewer";
 import {
   VerbalCard,
@@ -9,6 +9,9 @@ import {
 } from "@/components/feedback/FeedbackCards";
 import { CoachingTips } from "@/components/feedback/CoachingTips";
 import { SuggestedScript } from "@/components/feedback/SuggestedScript";
+import { ShareableScoreCard } from "@/components/feedback/ShareableScoreCard";
+import { ChallengeButton } from "@/components/feedback/ChallengeButton";
+import { UpgradeBanner } from "@/components/shared/UpgradeBanner";
 import { SessionPollingWrapper } from "./SessionPollingWrapper";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,6 +69,9 @@ export default async function SessionPage({
 
   // Failed
   if (session.status === "failed") {
+    const errorHint = session.title?.startsWith("ERROR:") ? session.title.slice(7) : null;
+    const isNoSpeech = errorHint?.toLowerCase().includes("no speech") || errorHint?.toLowerCase().includes("transcript too short");
+
     return (
       <div className="mx-auto max-w-2xl space-y-6">
         <Button variant="ghost" size="sm" asChild>
@@ -78,15 +84,32 @@ export default async function SessionPage({
             <CardTitle className="text-destructive">Analysis failed</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Something went wrong while analyzing your pitch. This can happen if
-              the video had no audible speech.
-            </p>
-            <Button asChild>
-              <Link href="/dashboard/record">
-                <RefreshCw className="mr-1.5 h-4 w-4" /> Try again
-              </Link>
-            </Button>
+            {isNoSpeech ? (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  We couldn&apos;t detect enough speech in your recording. This usually means:
+                </p>
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc ml-5">
+                  <li>The microphone wasn&apos;t picking up audio</li>
+                  <li>The recording was too short or too quiet</li>
+                  <li>Background noise was overwhelming the speech</li>
+                </ul>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Something went wrong while analyzing your pitch. This can happen if the video had no audible speech or our AI service was temporarily unavailable.
+              </p>
+            )}
+            <div className="flex items-center gap-3">
+              <Button asChild>
+                <Link href="/dashboard/record">
+                  <RefreshCw className="mr-1.5 h-4 w-4" /> Record again
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/dashboard">Back to dashboard</Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -151,6 +174,11 @@ export default async function SessionPage({
     body_language_notes: fb.body_language_notes ?? "",
   };
 
+  const structureElements = [fb.has_problem, fb.has_solution, fb.has_traction, fb.has_ask];
+  const structurePresent = structureElements.filter(Boolean).length + (fb.has_hook ? 1 : 0);
+  const structureTotal = structureElements.length + (fb.has_hook !== null ? 1 : 0);
+  const totalFillers = (fb.filler_words ?? []).reduce((sum: number, f: { count: number }) => sum + f.count, 0);
+
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
@@ -175,7 +203,8 @@ export default async function SessionPage({
                 ` · ${Math.round(session.duration_seconds)}s`}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <ChallengeButton sessionId={session.id} score={fb.overall_score} grade={fb.grade} />
             <Button asChild variant="outline" size="sm">
               <Link href={`/dashboard/compare?a=${session.id}`}>
                 <GitCompareArrows className="mr-1.5 h-4 w-4" />
@@ -191,12 +220,22 @@ export default async function SessionPage({
 
       {/* Overall score */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 space-y-4">
           <OverallScore
             score={fb.overall_score}
             grade={fb.grade}
             confidenceLevel={fb.confidence_level}
           />
+          <MiniStats
+            wpm={fb.wpm}
+            clarity={fb.clarity_score}
+            structurePresent={structurePresent}
+            structureTotal={structureTotal}
+            fillerCount={totalFillers}
+          />
+          <div className="flex justify-center pt-2">
+            <ShareableScoreCard score={fb.overall_score} grade={fb.grade} sessionId={session.id} />
+          </div>
         </CardContent>
       </Card>
 
@@ -216,7 +255,20 @@ export default async function SessionPage({
 
       {/* AI-rewritten script */}
       {fb.suggested_script && (
-        <SuggestedScript script={fb.suggested_script} isPro={isPaid} />
+        <SuggestedScript
+          script={fb.suggested_script}
+          isPro={isPaid}
+          originalTranscript={fb.transcript}
+        />
+      )}
+
+      {/* Upgrade banner for free sessions */}
+      {!isPaid && (
+        <UpgradeBanner
+          title="Want body language + AI script?"
+          description="This was a free pitch. Upgrade to credits for body language analysis, an AI-rewritten script, and 5-minute recordings."
+          ctaText="Get credits — from $9"
+        />
       )}
 
       {/* Transcript */}

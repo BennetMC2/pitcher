@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Coins, Loader2, Mic2 } from "lucide-react";
+import { Check, Coins, Loader2, Mic2, X, TrendingUp } from "lucide-react";
 import { CREDIT_PACKS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
@@ -193,6 +193,80 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+
+          {/* Social proof */}
+          <div className="mt-12 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-background px-5 py-2 shadow-sm">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <span className="text-sm">
+                <span className="font-bold text-primary">89%</span> of users improved their score by their second pitch
+              </span>
+            </div>
+          </div>
+
+          {/* Feature comparison table */}
+          <div className="mt-16">
+            <h2 className="text-center text-2xl font-bold mb-8">What&apos;s included</h2>
+            <div className="overflow-hidden rounded-xl border">
+              <div className="grid grid-cols-3 gap-0 border-b bg-muted/50 px-4 py-3 text-sm font-semibold">
+                <span>Feature</span>
+                <span className="text-center">Free</span>
+                <span className="text-center">Credit</span>
+              </div>
+              {[
+                { name: "Verbal delivery analysis", free: true, credit: true },
+                { name: "Story structure breakdown", free: true, credit: true },
+                { name: "Confidence score & grade", free: true, credit: true },
+                { name: "Priority coaching tips", free: true, credit: true },
+                { name: "Recording time", free: "2 min", credit: "5 min" },
+                { name: "Body language analysis", free: false, credit: true },
+                { name: "AI-rewritten script", free: false, credit: true },
+                { name: "Credits expire", free: "—", credit: "Never" },
+              ].map((f) => (
+                <div key={f.name} className="grid grid-cols-3 gap-0 border-b last:border-0 px-4 py-3 text-sm">
+                  <span>{f.name}</span>
+                  <span className="flex justify-center">
+                    {f.free === true ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : f.free === false ? (
+                      <X className="h-4 w-4 text-muted-foreground/40" />
+                    ) : (
+                      <span className="text-muted-foreground">{f.free}</span>
+                    )}
+                  </span>
+                  <span className="flex justify-center">
+                    {f.credit === true ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <span className="text-muted-foreground">{String(f.credit)}</span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* FAQ */}
+          <div className="mt-16">
+            <h2 className="text-center text-2xl font-bold mb-8">Frequently asked questions</h2>
+            <div className="space-y-4 max-w-2xl mx-auto">
+              {[
+                { q: "Do credits expire?", a: "No. Credits never expire. Use them whenever you're ready." },
+                { q: "What counts as a 'pitch'?", a: "One recording + AI analysis = one pitch. Whether it's 30 seconds or 5 minutes." },
+                { q: "Can I get a refund?", a: "Yes — email hello@nail-it.io within 7 days of purchase if you haven't used your credits." },
+                { q: "What's the difference between free and credit pitches?", a: "Free pitches include verbal delivery and story structure analysis. Credit pitches add body language analysis, an AI-rewritten script, and 5-minute max recording." },
+                { q: "Is my video stored securely?", a: "Yes. Videos are encrypted and stored securely. Only you can access your recordings and feedback." },
+              ].map((faq) => (
+                <details key={faq.q} className="group rounded-lg border px-4 py-3">
+                  <summary className="cursor-pointer font-medium text-sm list-none flex items-center justify-between">
+                    {faq.q}
+                    <span className="text-muted-foreground group-open:rotate-180 transition-transform">▾</span>
+                  </summary>
+                  <p className="mt-2 text-sm text-muted-foreground">{faq.a}</p>
+                </details>
+              ))}
             </div>
           </div>
 

@@ -70,6 +70,7 @@ export interface MediaPipeFrameData {
 
 export type RecordingPhase =
   | "idle"
+  | "connecting"
   | "ready"
   | "countdown"
   | "recording"

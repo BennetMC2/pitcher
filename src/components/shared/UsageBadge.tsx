@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FREE_PITCH_LIMIT } from "@/lib/constants";
@@ -43,8 +44,10 @@ export function UsageBadge({ pitchesUsed, credits }: UsageBadgeProps) {
   }
 
   return (
-    <Badge variant="destructive" className="text-xs">
-      No pitches left
-    </Badge>
+    <Link href="/pricing">
+      <Badge variant="destructive" className="text-xs cursor-pointer hover:bg-destructive/90">
+        No pitches left — Buy credits
+      </Badge>
+    </Link>
   );
 }

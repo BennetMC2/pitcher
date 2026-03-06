@@ -80,6 +80,24 @@ export function VerbalCard({ verbal }: { verbal: VerbalAnalysis }) {
           </div>
         )}
 
+        {/* Pacing range visualization */}
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground">Pace range</p>
+          <div className="relative h-2 rounded-full bg-muted">
+            <div className="absolute top-0 left-[26%] w-[22%] h-full rounded-full bg-green-200" title="Ideal: 130-160 WPM" />
+            <div
+              className="absolute top-0 h-4 w-1 -mt-1 rounded-full bg-foreground"
+              style={{ left: `${Math.min(Math.max((verbal.wpm / 200) * 100, 2), 98)}%` }}
+              title={`${verbal.wpm} WPM`}
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-muted-foreground">
+            <span>80</span>
+            <span>130–160 ideal</span>
+            <span>200+</span>
+          </div>
+        </div>
+
         <p className="text-sm text-muted-foreground">{verbal.pacing_assessment}</p>
       </CardContent>
     </Card>
@@ -147,16 +165,23 @@ export function StoryStructureCard({ structure, goal }: StoryStructureCardProps)
         {elements.map((el) => {
           const present = structure[el.key];
           return (
-            <div key={el.key} className="flex items-center gap-3">
-              {present ? (
-                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-              ) : (
-                <XCircle className="h-4 w-4 text-red-400 shrink-0" />
-              )}
-              <div>
-                <span className="text-sm font-medium">{el.label}</span>
-                <span className="text-xs text-muted-foreground ml-2">{el.desc}</span>
+            <div key={el.key} className="space-y-1">
+              <div className="flex items-center gap-3">
+                {present ? (
+                  <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                ) : (
+                  <XCircle className="h-4 w-4 text-red-400 shrink-0" />
+                )}
+                <div>
+                  <span className="text-sm font-medium">{el.label}</span>
+                  <span className="text-xs text-muted-foreground ml-2">{el.desc}</span>
+                </div>
               </div>
+              {!present && (
+                <p className="ml-7 text-xs text-amber-600 bg-amber-50 rounded px-2 py-1">
+                  Try adding a clear {el.label.toLowerCase()} section to strengthen your pitch.
+                </p>
+              )}
             </div>
           );
         })}
@@ -196,13 +221,13 @@ export function BodyLanguageCard({ bodyLanguage, isPro }: BodyLanguageCardProps)
           <Lock className="h-8 w-8 text-muted-foreground" />
           <div className="text-center">
             <p className="font-semibold text-sm">Credit feature</p>
-            <p className="text-xs text-muted-foreground">Included with credit pitches</p>
+            <p className="text-xs text-muted-foreground">Body language tracking with your next credit pitch</p>
           </div>
           <Link
             href="/pricing"
-            className="text-xs text-primary hover:underline font-medium"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Buy credits →
+            Get credits — from $1.80/pitch
           </Link>
         </div>
       )}
@@ -211,26 +236,24 @@ export function BodyLanguageCard({ bodyLanguage, isPro }: BodyLanguageCardProps)
         <CardTitle className="text-base">Body Language</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-3 gap-3">
-          {metrics.map((m) => (
-            <div key={m.label} className="text-center rounded-lg bg-muted/50 p-3">
-              <p className="text-xs text-muted-foreground">{m.label}</p>
-              <p
-                className={`text-xl font-bold mt-0.5 ${
-                  m.value >= 80
-                    ? "text-green-600"
-                    : m.value >= 60
-                    ? "text-yellow-600"
-                    : "text-red-600"
-                }`}
-              >
-                {m.value}
-                <span className="text-xs font-normal text-muted-foreground">
-                  {m.unit}
-                </span>
-              </p>
-            </div>
-          ))}
+        <div className="space-y-3">
+          {metrics.map((m) => {
+            const color = m.value >= 80 ? "bg-green-500" : m.value >= 60 ? "bg-yellow-500" : "bg-red-500";
+            const textColor = m.value >= 80 ? "text-green-600" : m.value >= 60 ? "text-yellow-600" : "text-red-600";
+            return (
+              <div key={m.label} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">{m.label}</span>
+                  <span className={`text-sm font-bold ${textColor}`}>
+                    {m.value}{m.unit}
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-muted">
+                  <div className={`h-full rounded-full ${color} transition-all`} style={{ width: `${m.value}%` }} />
+                </div>
+              </div>
+            );
+          })}
         </div>
         <p className="text-sm text-muted-foreground">{bodyLanguage.body_language_notes}</p>
       </CardContent>

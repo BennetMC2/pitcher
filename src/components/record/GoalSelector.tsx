@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { PITCH_GOALS } from "@/lib/goalConfig";
 import type { PitchGoal } from "@/lib/constants";
 
@@ -17,7 +18,7 @@ export function GoalSelector({ selected, onSelect }: GoalSelectorProps) {
           We&apos;ll tailor the AI feedback to your context.
         </p>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {PITCH_GOALS.map((goal) => (
           <button
             key={goal.id}
@@ -31,7 +32,12 @@ export function GoalSelector({ selected, onSelect }: GoalSelectorProps) {
           >
             <span className="text-xl leading-none mt-0.5">{goal.icon}</span>
             <div>
-              <p className="text-sm font-medium">{goal.label}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-sm font-medium">{goal.label}</p>
+                {goal.id === "startup_pitch" && (
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Popular</Badge>
+                )}
+              </div>
               <p className="text-xs text-muted-foreground">{goal.description}</p>
             </div>
           </button>

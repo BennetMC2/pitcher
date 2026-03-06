@@ -4,7 +4,8 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Mic2, ChevronRight, Clock, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { Mic2, ChevronRight, Clock, CheckCircle2, XCircle, Loader2, Video, TrendingUp, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { Database } from "@/types/database.types";
 
 type Session = Database["public"]["Tables"]["pitch_sessions"]["Row"] & {
@@ -72,13 +73,25 @@ export function SessionList({ sessions, loading }: SessionListProps) {
   if (sessions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-          <Mic2 className="h-6 w-6 text-muted-foreground" />
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 mb-4">
+          <Mic2 className="h-7 w-7 text-primary" />
         </div>
-        <h3 className="mt-4 font-semibold">No pitches yet</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Record your first pitch to get AI feedback.
+        <h3 className="text-lg font-semibold">Record your first pitch</h3>
+        <p className="mt-1 text-sm text-muted-foreground max-w-sm">
+          Get your confidence score, verbal analysis, and personalized coaching tips in under 60 seconds.
         </p>
+        <div className="mt-4 flex flex-col items-center gap-3">
+          <Button asChild>
+            <Link href="/dashboard/record" className="gap-2">
+              <Video className="h-4 w-4" />
+              Record now
+            </Link>
+          </Button>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><TrendingUp className="h-3 w-3" /> Score & grade</span>
+            <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" /> AI coaching</span>
+          </div>
+        </div>
       </div>
     );
   }

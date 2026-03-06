@@ -1,11 +1,33 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Play, TrendingUp } from "lucide-react";
 
+const mockStats = [
+  { label: "Overall Score", value: "84", unit: "/100", color: "text-green-500" },
+  { label: "Verbal Clarity", value: "91", unit: "/100", color: "text-blue-500" },
+  { label: "Story Structure", value: "3/4", unit: " elements", color: "text-orange-500" },
+  { label: "Eye Contact", value: "78", unit: "%", color: "text-purple-500" },
+];
+
 export function Hero() {
+  const mockupRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = mockupRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted/30 pt-20 pb-24">
       {/* Background grid */}
@@ -27,8 +49,7 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-xl text-muted-foreground">
-          Stats say you get 7 seconds to make an impression. Our AI coaches you
-          to make every second count.
+          Record your pitch. Get AI-powered feedback on delivery, structure, and body language — in under 60 seconds.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -49,8 +70,13 @@ export function Hero() {
           No sign-up required · 3 free pitches included
         </p>
 
-        {/* Mockup preview */}
-        <div className="mt-16 rounded-2xl border bg-card shadow-2xl overflow-hidden">
+        {/* Animated mockup preview */}
+        <div
+          ref={mockupRef}
+          className={`mt-16 rounded-2xl border bg-card shadow-2xl overflow-hidden transition-all duration-700 ${
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <div className="flex items-center gap-2 border-b px-4 py-3">
             <div className="h-3 w-3 rounded-full bg-red-400" />
             <div className="h-3 w-3 rounded-full bg-yellow-400" />
@@ -58,13 +84,14 @@ export function Hero() {
             <span className="ml-2 text-xs text-muted-foreground">nail-it.io/dashboard/session/abc123</span>
           </div>
           <div className="grid grid-cols-2 gap-4 p-6 md:grid-cols-4">
-            {[
-              { label: "Overall Score", value: "84", unit: "/100", color: "text-green-500" },
-              { label: "Verbal Clarity", value: "91", unit: "/100", color: "text-blue-500" },
-              { label: "Story Structure", value: "3/4", unit: " elements", color: "text-orange-500" },
-              { label: "Eye Contact", value: "78", unit: "%", color: "text-purple-500" },
-            ].map((stat) => (
-              <div key={stat.label} className="rounded-xl border bg-background p-4 text-left">
+            {mockStats.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={`rounded-xl border bg-background p-4 text-left transition-all duration-500 ${
+                  visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={{ transitionDelay: `${(i + 1) * 150}ms` }}
+              >
                 <p className="text-xs text-muted-foreground">{stat.label}</p>
                 <p className={`mt-1 text-2xl font-bold ${stat.color}`}>
                   {stat.value}

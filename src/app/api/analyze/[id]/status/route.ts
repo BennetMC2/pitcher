@@ -14,7 +14,7 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("pitch_sessions")
-    .select("id, status, updated_at")
+    .select("id, status, updated_at, analysis_step")
     .eq("id", id)
     .eq("user_id", user.id)
     .single();
@@ -23,5 +23,9 @@ export async function GET(
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ status: data.status, updatedAt: data.updated_at });
+  return NextResponse.json({
+    status: data.status,
+    updatedAt: data.updated_at,
+    analysisStep: data.analysis_step ?? null,
+  });
 }

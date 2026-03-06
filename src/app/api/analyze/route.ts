@@ -88,7 +88,15 @@ async function runPipeline(
   const goal = (session.goal || "startup_pitch") as PitchGoal;
   console.log("[analyze] Starting pipeline for session:", sessionId, "isPaid:", isPaid, "goal:", goal);
 
+  async function setStep(step: string) {
+    await service
+      .from("pitch_sessions")
+      .update({ analysis_step: step })
+      .eq("id", sessionId);
+  }
+
   // ── Step 1-2: Get transcript ──────────────────────────────────────────────
+  await setStep("transcribing");
   let transcript: string;
   let wordTimestamps: { word: string; start: number; end: number }[] = [];
 
@@ -121,6 +129,7 @@ async function runPipeline(
   console.log("[analyze] Transcript ready, length:", transcript.length);
 
   // ── Steps 3-5: Parallel Haiku analysis ───────────────────────────────────
+  await setStep("analyzing");
   const duration = session.duration_seconds ?? 60;
   const rawFrames = (session.body_language_raw as MediaPipeFrameData[]) ?? [];
 
@@ -138,6 +147,7 @@ async function runPipeline(
   console.log("[analyze] Claude analysis done");
 
   // ── Step 6: Sonnet synthesis ───────────────────────────────────────────────
+  await setStep("synthesizing");
   // For free pitches, pass skipScript flag so synthesis doesn't generate a script
   const overall = await buildOverallFeedback(
     transcript,
@@ -151,6 +161,7 @@ async function runPipeline(
   console.log("[analyze] Synthesis done. Score:", overall.overall_score);
 
   // ── Step 7: Write feedback row ─────────────────────────────────────────────
+  await setStep("saving");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const feedbackRow: Record<string, any> = {
     session_id: sessionId,

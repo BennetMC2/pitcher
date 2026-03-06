@@ -30,24 +30,23 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
 
   const initCamera = useCallback(async () => {
     setError(null);
+    setPhase("connecting");
 
     // Check if browser can see any camera devices at all
-    // On macOS, if Chrome doesn't have camera permission in System Settings,
-    // enumerateDevices returns zero videoinput devices.
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const hasVideo = devices.some((d) => d.kind === "videoinput");
       const hasAudio = devices.some((d) => d.kind === "audioinput");
       if (!hasVideo && !hasAudio) {
         setError(
-          "Your browser can't see any cameras or microphones. On Mac, go to System Settings → Privacy & Security → Camera (and Microphone) and make sure your browser is enabled. Then restart your browser."
+          "no_devices"
         );
         setPhase("idle");
         return;
       }
       if (!hasVideo) {
         setError(
-          "No camera visible to your browser. On Mac, check System Settings → Privacy & Security → Camera and make sure your browser is enabled. Then restart your browser."
+          "no_camera"
         );
         setPhase("idle");
         return;
@@ -71,37 +70,26 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
         return;
       } catch (err) {
         const name = err instanceof DOMException ? err.name : "";
-        // Terminal errors — simpler constraints won't help
         if (name === "NotAllowedError") {
-          setError(
-            "Camera access blocked. Click the lock/settings icon in your browser's address bar, set Camera and Microphone to \"Allow\", then reload this page."
-          );
+          setError("denied");
           setPhase("idle");
           return;
         }
         if (name === "NotReadableError") {
-          setError(
-            "Your camera is being used by another app or tab. Close it, then tap \"Try again\" below."
-          );
+          setError("in_use");
           setPhase("idle");
           return;
         }
         if (name === "NotFoundError") {
-          setError(
-            "No camera detected. On Mac, check System Settings → Privacy & Security → Camera and make sure your browser is allowed. Then restart your browser and try again."
-          );
+          setError("no_camera");
           setPhase("idle");
           return;
         }
-        // OverconstrainedError or other — try simpler constraints
         continue;
       }
     }
 
-    // All attempts failed
-    setError(
-      "Could not access your camera. Close other apps using the camera, then tap \"Try again\" below."
-    );
+    setError("generic_camera_error");
     setPhase("idle");
   }, [setPhase, setError]);
 
@@ -154,6 +142,18 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
     }, 1000);
   }
 
+  const skipCountdown = useCallback(() => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    startRecording();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const startImmediate = useCallback(() => {
+    if (!streamRef.current) return;
+    startRecording();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const stopRecording = useCallback(() => {
     clearTimers();
     if (
@@ -190,6 +190,8 @@ export function useRecording(maxSeconds = FREE_MAX_RECORDING_SECONDS) {
     getStream: () => streamRef.current,
     initCamera,
     startCountdown,
+    startImmediate,
+    skipCountdown,
     stopRecording,
     retake,
   };
