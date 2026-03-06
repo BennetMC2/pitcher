@@ -64,10 +64,11 @@ export function RecordingStudio({
     streamRef.current = stream;
   }, [phase, getStream]);
 
-  // Wire review video
+  // Wire review video — seek to 0.001s to force first frame render (avoids black screen)
   useEffect(() => {
     if (reviewVideoRef.current && videoUrl) {
       reviewVideoRef.current.src = videoUrl;
+      reviewVideoRef.current.currentTime = 0.001;
     }
   }, [videoUrl]);
 
@@ -269,6 +270,7 @@ export function RecordingStudio({
             ref={reviewVideoRef}
             controls
             playsInline
+            preload="metadata"
             className="w-full max-h-[480px] mx-auto block"
           />
         </div>
