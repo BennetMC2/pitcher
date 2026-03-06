@@ -43,7 +43,7 @@ export function FAQ() {
   const isInView = useInView(ref, { once: true, amount: 0.15 });
 
   return (
-    <section id="faq" className="py-28" ref={ref}>
+    <section id="faq" className="py-16" ref={ref}>
       <div className="mx-auto max-w-3xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

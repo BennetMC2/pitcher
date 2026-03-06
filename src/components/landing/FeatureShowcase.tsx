@@ -6,14 +6,14 @@ import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, X, Sparkles, ArrowRight } from "lucide-react";
 
-const features = [
+const features: { name: string; free: boolean | string; credit: boolean | string; highlight?: boolean }[] = [
   { name: "Verbal delivery analysis", free: true, credit: true },
   { name: "Story structure breakdown", free: true, credit: true },
   { name: "Confidence score & grade", free: true, credit: true },
   { name: "Priority coaching tips", free: true, credit: true },
   { name: "Recording time", free: "2 min", credit: "5 min" },
-  { name: "Body language analysis", free: false, credit: true },
-  { name: "AI-rewritten script", free: false, credit: true },
+  { name: "Body language analysis", free: false, credit: true, highlight: true },
+  { name: "AI-rewritten script", free: false, credit: true, highlight: true },
 ];
 
 export function FeatureShowcase() {
@@ -21,7 +21,7 @@ export function FeatureShowcase() {
   const isInView = useInView(ref, { once: true, amount: 0.15 });
 
   return (
-    <section id="pricing" className="py-28" ref={ref}>
+    <section id="pricing" className="py-16" ref={ref}>
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid gap-6 md:grid-cols-2">
           {/* Left: Free vs Pro pricing table */}
@@ -62,7 +62,11 @@ export function FeatureShowcase() {
               {features.map((f) => (
                 <div
                   key={f.name}
-                  className="grid grid-cols-3 gap-0 rounded-xl bg-white clay-shadow-sm p-4 items-center"
+                  className={`grid grid-cols-3 gap-0 rounded-xl p-4 items-center ${
+                    f.highlight
+                      ? "bg-[#FFF8DC] clay-shadow-sm"
+                      : "bg-white clay-shadow-sm"
+                  }`}
                 >
                   <span className="text-sm font-medium">{f.name}</span>
                   <span className="flex justify-center">
@@ -75,7 +79,9 @@ export function FeatureShowcase() {
                         <X className="h-3.5 w-3.5 text-red-400" />
                       </span>
                     ) : (
-                      <span className="text-sm text-muted-foreground font-medium">{f.free}</span>
+                      <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-3 py-1 text-sm font-medium">
+                        {f.free}
+                      </span>
                     )}
                   </span>
                   <span className="flex justify-center">
@@ -84,7 +90,9 @@ export function FeatureShowcase() {
                         <Check className="h-3.5 w-3.5 text-green-600" />
                       </span>
                     ) : (
-                      <span className="text-sm font-semibold text-primary">{f.credit}</span>
+                      <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-3 py-1 text-sm font-semibold">
+                        {f.credit}
+                      </span>
                     )}
                   </span>
                 </div>
@@ -93,12 +101,22 @@ export function FeatureShowcase() {
 
             {/* Illustration placeholders */}
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-muted/30 clay-inset p-4 flex items-center justify-center h-20 text-xs text-muted-foreground">
+              <div className="rounded-xl bg-[#FFF8DC] clay-inset p-4 flex items-center justify-center h-20 text-xs text-muted-foreground">
                 {/* PLACEHOLDER: AI Rewritten Script illustration */}
               </div>
-              <div className="rounded-xl bg-muted/30 clay-inset p-4 flex items-center justify-center h-20 text-xs text-muted-foreground">
+              <div className="rounded-xl bg-[#FFF8DC] clay-inset p-4 flex items-center justify-center h-20 text-xs text-muted-foreground">
                 {/* PLACEHOLDER: Body Language analysis illustration */}
               </div>
+            </div>
+
+            {/* Free CTA button */}
+            <div className="mt-6 text-center">
+              <Link
+                href="/record"
+                className="inline-flex items-center gap-2 bg-white text-foreground rounded-full clay-shadow-sm hover:clay-shadow px-6 py-3 font-medium text-sm transition-all duration-200"
+              >
+                Record your first pitch free <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </motion.div>
 

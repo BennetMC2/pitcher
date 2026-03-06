@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Play, Mic, BarChart3, Eye, BookOpen, Sparkles, MessageSquare, User } from "lucide-react";
 
 const mockStats = [
-  { label: "Verbal Clarity", value: 91, display: "91", unit: "/100", icon: Mic, barPct: 91 },
-  { label: "Story Structure", value: 75, display: "3/4", unit: " elements", icon: BookOpen, barPct: 75 },
-  { label: "Confidence", value: 84, display: "84", unit: "/100", icon: BarChart3, barPct: 84 },
-  { label: "Eye Contact", value: 78, display: "78", unit: "%", icon: Eye, barPct: 78 },
+  { label: "Verbal Clarity", value: 91, display: "91", unit: "/100", icon: Mic, barPct: 91, barColor: "#22C55E" },
+  { label: "Story Structure", value: 75, display: "3/4", unit: " elements", icon: BookOpen, barPct: 75, barColor: "#F59E0B" },
+  { label: "Confidence", value: 84, display: "84", unit: "/100", icon: BarChart3, barPct: 84, barColor: "#22C55E" },
+  { label: "Eye Contact", value: 78, display: "78", unit: "%", icon: Eye, barPct: 78, barColor: "#EF4444" },
 ];
 
 function AnimatedCounter({ target, visible }: { target: number; visible: boolean }) {
@@ -38,7 +38,7 @@ export function Hero() {
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-32">
+    <section className="relative overflow-hidden pt-24 pb-16">
       {/* Pink grid background */}
       <div className="absolute inset-0 bg-pink-grid opacity-40" aria-hidden />
 
@@ -52,8 +52,8 @@ export function Hero() {
         </Badge>
 
         <h1
-          className="text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95]"
-          style={{ textShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
+          className="text-5xl font-black tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95]"
+          style={{ textShadow: "0 0 40px rgba(255,255,255,0.8), 0 0 80px rgba(0,229,204,0.15)" }}
         >
           You get one shot.
           <br />
@@ -156,7 +156,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-6 rounded-2xl bg-[#A3C1D4]/30 clay-shadow p-4 md:p-6"
+            className="mt-6 rounded-2xl bg-[#8FAABE]/40 clay-shadow p-4 md:p-6"
           >
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {mockStats.map((stat, i) => (
@@ -181,13 +181,14 @@ export function Hero() {
                     )}
                     <span className="text-xs font-normal text-muted-foreground ml-0.5">{stat.unit}</span>
                   </p>
-                  {/* Teal progress bar */}
+                  {/* Color-coded progress bar */}
                   <div className="mt-2 h-1.5 w-full rounded-full bg-muted/50 overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={isInView ? { width: `${stat.barPct}%` } : {}}
                       transition={{ duration: 1, delay: 0.8 + i * 0.15, ease: "easeOut" }}
-                      className="h-full rounded-full bg-primary"
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: stat.barColor }}
                     />
                   </div>
                 </motion.div>

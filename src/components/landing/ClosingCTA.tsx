@@ -11,7 +11,7 @@ export function ClosingCTA() {
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
-    <section className="py-28" ref={ref}>
+    <section className="py-16" ref={ref}>
       <div className="mx-auto max-w-3xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

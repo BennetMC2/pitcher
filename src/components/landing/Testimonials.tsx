@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { TrendingUp, BarChart3, Clock } from "lucide-react";
 
 const testimonials = [
   {
@@ -55,32 +56,31 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: "89%", numericPct: 89, label: "improved by second pitch" },
-  { value: "2,000+", numericPct: 80, label: "pitches analyzed" },
-  { value: "< 60s", numericPct: 95, label: "average analysis time" },
+  { value: "89%", numericPct: 89, label: "improved", sublabel: "by second pitch", icon: TrendingUp },
+  { value: "2,000+", numericPct: 80, label: "pitches", sublabel: "analyzed", icon: BarChart3 },
+  { value: "< 60s", numericPct: 95, label: "analysis", sublabel: "average time", icon: Clock },
 ];
 
-const vcLogos = ["Y COMBINATOR", "TECHSTARS", "SEQUOIA", "A16Z", "STANFORD"];
+const vcLogos = ["Y Combinator", "Techstars", "SEQUOIA", "a16z"];
 
 function RingGauge({ pct }: { pct: number }) {
-  const r = 32;
+  const r = 50;
   const circ = 2 * Math.PI * r;
   const offset = circ - (pct / 100) * circ;
   return (
-    <svg width="80" height="80" className="-rotate-90 shrink-0">
-      <circle cx="40" cy="40" r={r} fill="none" stroke="currentColor" strokeWidth="6" className="text-muted/50" />
+    <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r={r} fill="none" stroke="#1E293B" strokeWidth="10" opacity="0.15" />
       <circle
-        cx="40"
-        cy="40"
+        cx="60"
+        cy="60"
         r={r}
         fill="none"
-        stroke="currentColor"
-        strokeWidth="6"
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
+        stroke="#00E5CC"
+        strokeWidth="10"
+        strokeDasharray={`${pct * 3.14} ${100 * 3.14}`}
         strokeLinecap="round"
-        className="text-primary"
-        style={{ transition: "stroke-dashoffset 1.2s ease-out" }}
+        className="drop-shadow-[0_0_6px_rgba(0,229,204,0.5)]"
+        style={{ transition: "stroke-dasharray 1.2s ease-out" }}
       />
     </svg>
   );
@@ -91,10 +91,10 @@ export function Testimonials() {
   const isInView = useInView(ref, { once: true, amount: 0.15 });
 
   return (
-    <section className="py-28" ref={ref}>
+    <section className="py-16" ref={ref}>
       <div className="mx-auto max-w-5xl px-6">
         {/* Circular gauge stats on blue platform strip */}
-        <div className="mb-16 rounded-2xl bg-[#A3C1D4]/20 clay-shadow p-4 md:p-6">
+        <div className="mb-16 rounded-3xl bg-[#8FAABE]/40 clay-shadow p-4 md:p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {stats.map((stat, i) => (
               <motion.div
@@ -102,15 +102,20 @@ export function Testimonials() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="rounded-2xl bg-white clay-shadow p-5 flex items-center gap-4"
+                className="relative rounded-2xl bg-white clay-shadow p-6 flex flex-col items-center"
               >
-                <div className="relative">
+                {/* Floating icon badge */}
+                <div className="absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary clay-shadow-sm">
+                  <stat.icon className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <div className="relative w-32 h-32">
                   <RingGauge pct={isInView ? stat.numericPct : 0} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-sm font-extrabold text-primary">{stat.value}</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-3xl font-black text-foreground">{stat.value}</span>
+                    <span className="text-xs text-muted-foreground">{stat.label}</span>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                <p className="mt-2 text-sm text-muted-foreground font-medium">{stat.sublabel}</p>
               </motion.div>
             ))}
           </div>
@@ -133,7 +138,8 @@ export function Testimonials() {
           </p>
         </motion.div>
 
-        {/* Glass testimonial pods */}
+        {/* Glass testimonial pods on blue shelf */}
+        <div className="rounded-3xl bg-[#8FAABE]/25 p-8 clay-shadow-lg">
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <motion.div
@@ -164,10 +170,11 @@ export function Testimonials() {
             </motion.div>
           ))}
         </div>
+        </div>
 
         {/* VC logo bar */}
-        <div className="mt-16 text-center">
-          <p className="text-sm text-muted-foreground mb-4">Trusted by founders from</p>
+        <div className="mt-12 text-center">
+          <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-4">Founders backed by:</p>
           <div className="flex flex-wrap items-center justify-center gap-8">
             {vcLogos.map((logo) => (
               <span

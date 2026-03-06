@@ -19,7 +19,7 @@ export default function LandingPage() {
     <div className="flex min-h-screen flex-col scroll-smooth bg-grid-pattern">
       {/* Nav — floating pill */}
       <header className="sticky top-0 z-50 pt-4 px-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between rounded-full bg-pink-100/80 backdrop-blur-sm clay-shadow px-6 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between rounded-full bg-[#F5C6CB]/90 backdrop-blur-sm clay-shadow px-6 py-3">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary clay-shadow-sm">
               <Check className="h-4 w-4 text-primary-foreground" />
