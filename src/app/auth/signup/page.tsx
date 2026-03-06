@@ -84,9 +84,9 @@ function SignupForm() {
 
   if (verifyEmail) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
+      <div className="relative flex min-h-screen flex-col items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="rounded-2xl border bg-background p-8 shadow-sm">
+          <div className="relative rounded-3xl bg-card clay-shadow-lg p-8 border-0">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
               <Mic2 className="h-6 w-6 text-primary" />
             </div>
@@ -109,7 +109,7 @@ function SignupForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
+    <div className="relative flex min-h-screen flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2 font-bold text-xl">
@@ -124,7 +124,7 @@ function SignupForm() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-background p-8 shadow-sm">
+        <div className="relative rounded-3xl bg-card clay-shadow-lg p-8 border-0">
           <div className="space-y-2">
             <Button
               variant="outline"

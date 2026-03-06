@@ -5,6 +5,7 @@ const testimonials = [
     author: "Sarah K.",
     role: "Founder, YC W24",
     initials: "SK",
+    highlight: "Got into YC",
   },
   {
     quote:
@@ -12,6 +13,7 @@ const testimonials = [
     author: "Marcus T.",
     role: "CEO, raised $1.2M",
     initials: "MT",
+    highlight: "Raised $1.2M",
   },
   {
     quote:
@@ -19,6 +21,7 @@ const testimonials = [
     author: "Priya R.",
     role: "Co-founder, Demo Day finalist",
     initials: "PR",
+    highlight: "Demo Day finalist",
   },
   {
     quote:
@@ -26,6 +29,7 @@ const testimonials = [
     author: "Daniel M.",
     role: "CTO, SaaS startup",
     initials: "DM",
+    highlight: "62 → 87 score",
   },
   {
     quote:
@@ -33,6 +37,7 @@ const testimonials = [
     author: "Aisha L.",
     role: "Product Manager",
     initials: "AL",
+    highlight: "Pacing improved",
   },
   {
     quote:
@@ -40,6 +45,7 @@ const testimonials = [
     author: "James W.",
     role: "Sales Director",
     initials: "JW",
+    highlight: "Actionable tips",
   },
 ];
 
@@ -49,25 +55,41 @@ const stats = [
   { value: "< 60s", label: "average analysis time" },
 ];
 
+const vcLogos = ["Y Combinator", "Techstars", "500 Global", "Stanford", "MIT"];
+
 export function Testimonials() {
   return (
-    <section className="py-24 bg-muted/30">
+    <section className="py-28">
       <div className="mx-auto max-w-5xl px-6">
-        {/* Stat blocks */}
-        <div className="mb-12 flex flex-wrap items-center justify-center gap-6">
+        {/* Circular gauge stats */}
+        <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="inline-flex items-center gap-2 rounded-full border bg-background px-5 py-2 shadow-sm"
+              className="rounded-3xl bg-card clay-shadow p-6 flex items-center gap-5"
             >
-              <span className="text-xl font-bold text-primary">{stat.value}</span>
-              <span className="text-sm text-muted-foreground">{stat.label}</span>
+              {/* Circular display */}
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full clay-inset bg-card/50">
+                <span className="text-2xl font-extrabold text-primary">{stat.value}</span>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                {/* Decorative measurement markings */}
+                <div className="flex gap-1 mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="h-1.5 w-4 rounded-full bg-primary/20" />
+                  ))}
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <div className="text-center mb-14">
+          <p className="text-sm font-semibold text-primary tracking-widest uppercase mb-3">
+            The Wall of Proof
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Founders who pitched better
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
@@ -75,14 +97,24 @@ export function Testimonials() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Glass testimonial pods */}
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t) => (
-            <div key={t.author} className="rounded-2xl border bg-background p-6">
-              <p className="text-sm leading-relaxed text-muted-foreground">
+            <div
+              key={t.author}
+              className="group rounded-3xl bg-card/90 backdrop-blur-sm clay-shadow p-6 transition-all duration-300 hover:-translate-y-1"
+            >
+              {/* VERIFIED badge */}
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wider mb-4">
+                Verified
+              </span>
+
+              <p className="text-sm leading-relaxed text-foreground/80">
                 &ldquo;{t.quote}&rdquo;
               </p>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
+
+              <div className="mt-5 flex items-center gap-3 pt-4 border-t border-border/50">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary clay-shadow-sm text-secondary-foreground text-xs font-bold">
                   {t.initials}
                 </div>
                 <div>
@@ -92,6 +124,21 @@ export function Testimonials() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* VC logo bar */}
+        <div className="mt-16 text-center">
+          <p className="text-sm text-muted-foreground mb-4">Trusted by founders from</p>
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            {vcLogos.map((logo) => (
+              <span
+                key={logo}
+                className="text-sm font-bold text-muted-foreground/50 tracking-wide uppercase"
+              >
+                {logo}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

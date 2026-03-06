@@ -21,6 +21,8 @@ import {
   Camera,
   Shield,
   Monitor,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 
 interface RecordingStudioProps {
@@ -141,17 +143,18 @@ export function RecordingStudio({
   // ── CONNECTING (shimmer placeholder) ──────────────────────────────────────
   if (phase === "connecting") {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border py-20 text-center">
-        <div className="relative h-16 w-16">
+      <div className="flex flex-col items-center justify-center gap-6 rounded-3xl bg-card clay-shadow py-24 text-center">
+        <div className="relative h-20 w-20">
           <div className="absolute inset-0 rounded-full bg-primary/10 animate-pulse" />
+          <div className="absolute inset-2 rounded-full bg-primary/5" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <Camera className="h-8 w-8 text-primary" />
+            <Camera className="h-9 w-9 text-primary" />
           </div>
         </div>
         <div>
-          <h2 className="text-xl font-semibold">Starting camera…</h2>
-          <p className="text-sm text-muted-foreground">
-            Allow camera access when prompted by your browser.
+          <h2 className="text-xl font-bold">Starting camera...</h2>
+          <p className="mt-1 text-sm text-muted-foreground max-w-xs mx-auto">
+            Allow camera and microphone access when prompted by your browser.
           </p>
         </div>
         <div className="w-full max-w-xs">
@@ -168,37 +171,40 @@ export function RecordingStudio({
     const errorInfo = error ? getCameraErrorInfo(error) : null;
 
     return (
-      <div className="flex flex-col items-center justify-center gap-6 rounded-2xl border border-dashed py-20 text-center">
+      <div className="flex flex-col items-center justify-center gap-6 rounded-3xl bg-card clay-shadow py-24 text-center">
         {errorInfo ? (
           <>
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 border border-amber-200">
-              <Shield className="h-8 w-8 text-amber-500" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-amber-50 border-2 border-amber-200">
+              <Shield className="h-9 w-9 text-amber-500" />
             </div>
             <div className="max-w-sm">
-              <h2 className="text-xl font-semibold">{errorInfo.title}</h2>
-              <ol className="mt-3 space-y-2 text-left text-sm text-muted-foreground">
+              <h2 className="text-xl font-bold">{errorInfo.title}</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Follow these steps to fix it:</p>
+              <ol className="mt-4 space-y-3 text-left text-sm">
                 {errorInfo.steps.map((step, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">{i + 1}</span>
-                    {step}
+                  <li key={i} className="flex items-start gap-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                      {i + 1}
+                    </span>
+                    <span className="text-muted-foreground pt-0.5">{step}</span>
                   </li>
                 ))}
               </ol>
             </div>
-            <Button size="lg" onClick={initCamera} className="gap-2">
+            <Button size="lg" onClick={initCamera} className="gap-2 mt-2 shadow-sm">
               <RotateCcw className="h-4 w-4" />
               Try again
             </Button>
           </>
         ) : (
           <>
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Video className="h-8 w-8 text-primary" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <Video className="h-9 w-9 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">Ready to pitch?</h2>
-              <p className="mt-1 text-muted-foreground">
-                You have {Math.floor(maxSeconds / 60)}m {maxSeconds % 60 > 0 ? `${maxSeconds % 60}s` : ""} max.
+              <h2 className="text-xl font-bold">Ready to pitch?</h2>
+              <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
+                You have {Math.floor(maxSeconds / 60)}m{maxSeconds % 60 > 0 ? ` ${maxSeconds % 60}s` : ""} max.
                 We&apos;ll analyze your delivery, story, and confidence.
               </p>
             </div>
@@ -206,9 +212,9 @@ export function RecordingStudio({
               size="lg"
               onClick={canRecord ? initCamera : onUpgradeNeeded}
               disabled={isStartDisabled}
-              className="gap-2"
+              className="gap-2 shadow-lg shadow-primary/20 h-12 px-8 text-base"
             >
-              <Mic className="h-4 w-4" />
+              <Mic className="h-5 w-5" />
               {canRecord
                 ? isStartDisabled
                   ? "Select a pitch type first"
@@ -223,22 +229,30 @@ export function RecordingStudio({
 
   // ── UPLOADING / PROCESSING ─────────────────────────────────────────────────
   if (phase === "uploading" || uploading) {
+    const steps = [
+      { label: "Uploading video", done: uploadProgress >= 100 },
+      { label: "Transcribing speech", done: false },
+      { label: "Analyzing delivery", done: false },
+      { label: "Generating feedback", done: false },
+    ];
+
     return (
-      <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border py-20 text-center">
+      <div className="flex flex-col items-center justify-center gap-6 rounded-3xl bg-card clay-shadow py-24 text-center">
         {uploadError ? (
           <>
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-              <AlertCircle className="h-8 w-8 text-destructive" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 border-2 border-destructive/20">
+              <AlertCircle className="h-9 w-9 text-destructive" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">Upload failed</h2>
-              <p className="mt-1 text-sm text-muted-foreground max-w-xs">
+              <h2 className="text-xl font-bold">Upload failed</h2>
+              <p className="mt-2 text-sm text-muted-foreground max-w-xs">
                 {uploadError}
               </p>
             </div>
             <Button
               onClick={() => retryUpload("Untitled Pitch", transcript)}
-              className="gap-2"
+              className="gap-2 shadow-sm"
+              size="lg"
             >
               <RotateCcw className="h-4 w-4" />
               Retry upload
@@ -246,14 +260,37 @@ export function RecordingStudio({
           </>
         ) : (
           <>
-            <LoadingSpinner className="h-10 w-10" />
-            <div>
-              <h2 className="text-xl font-semibold">Uploading your pitch…</h2>
-              <p className="text-muted-foreground">This will only take a moment.</p>
+            <div className="relative">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                <Loader2 className="h-9 w-9 text-primary animate-spin" />
+              </div>
             </div>
-            <div className="w-full max-w-xs space-y-1">
-              <Progress value={uploadProgress} className="h-2" />
-              <p className="text-xs text-muted-foreground">{uploadProgress}%</p>
+            <div>
+              <h2 className="text-xl font-bold">Analyzing your pitch...</h2>
+              <p className="text-muted-foreground mt-1">This will only take a moment.</p>
+            </div>
+            <div className="w-full max-w-sm space-y-4">
+              <div className="space-y-1">
+                <Progress value={uploadProgress} className="h-2.5" />
+                <p className="text-xs text-muted-foreground text-right">{uploadProgress}%</p>
+              </div>
+              {/* Step checklist */}
+              <div className="text-left space-y-2">
+                {steps.map((step, i) => (
+                  <div key={i} className="flex items-center gap-2.5 text-sm">
+                    {step.done ? (
+                      <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                    ) : i === 0 ? (
+                      <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
+                    ) : (
+                      <div className="h-4 w-4 rounded-full border border-muted-foreground/20 shrink-0" />
+                    )}
+                    <span className={step.done ? "text-foreground" : i === 0 ? "text-foreground font-medium" : "text-muted-foreground"}>
+                      {step.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </>
         )}
@@ -265,7 +302,7 @@ export function RecordingStudio({
   if (phase === "review") {
     return (
       <div className="space-y-4">
-        <div className="overflow-hidden rounded-2xl bg-black">
+        <div className="overflow-hidden rounded-3xl clay-shadow-lg bg-black">
           <video
             ref={reviewVideoRef}
             controls
@@ -274,12 +311,15 @@ export function RecordingStudio({
             className="w-full max-h-[480px] mx-auto block"
           />
         </div>
+        <p className="text-sm text-center text-muted-foreground">
+          Review your pitch, then submit for AI analysis.
+        </p>
         <div className="flex gap-3">
-          <Button variant="outline" onClick={retake} className="flex-1 gap-2">
+          <Button variant="outline" onClick={retake} className="flex-1 gap-2 h-11 shadow-sm">
             <RotateCcw className="h-4 w-4" />
             Retake
           </Button>
-          <Button onClick={handleUseThis} disabled={uploading} className="flex-1 gap-2">
+          <Button onClick={handleUseThis} disabled={uploading} className="flex-1 gap-2 h-11 shadow-lg shadow-primary/20">
             {uploading ? (
               <LoadingSpinner className="h-4 w-4" />
             ) : mode === "anonymous" ? (
@@ -300,25 +340,28 @@ export function RecordingStudio({
   // ── COUNTDOWN / READY / RECORDING ─────────────────────────────────────────
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-2xl bg-black">
+      <div className="relative overflow-hidden rounded-3xl clay-shadow-lg bg-muted/10">
         <video
           ref={videoRef}
           autoPlay
           playsInline
           muted
-          className="w-full aspect-video max-h-[480px] mx-auto block scale-x-[-1] object-cover"
+          className="w-full aspect-video max-h-[480px] mx-auto block scale-x-[-1] object-cover bg-muted"
         />
 
         {/* Countdown overlay */}
         {phase === "countdown" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 gap-4">
-            <span className="text-8xl font-bold text-white drop-shadow-lg">
-              {countdownValue}
-            </span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-white/10 animate-ping" style={{ animationDuration: "1s" }} />
+              <span className="relative text-8xl font-extrabold text-white drop-shadow-lg">
+                {countdownValue}
+              </span>
+            </div>
             <button
               type="button"
               onClick={skipCountdown}
-              className="text-sm text-white/70 hover:text-white transition-colors underline underline-offset-2"
+              className="text-sm text-white/60 hover:text-white transition-colors underline underline-offset-2"
             >
               Skip countdown
             </button>
@@ -327,15 +370,16 @@ export function RecordingStudio({
 
         {/* Recording indicator */}
         {phase === "recording" && (
-          <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
-            <span className={`text-sm font-medium ${timerColor}`}>{timeDisplay}</span>
+          <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-black/70 backdrop-blur-sm px-4 py-2 shadow-lg">
+            <span className="h-3 w-3 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500/50" />
+            <span className={`text-sm font-bold ${timerColor}`}>{timeDisplay}</span>
           </div>
         )}
 
         {/* MediaPipe status */}
         {phase === "ready" && mediaPipeReady && (
-          <div className="absolute bottom-4 left-4 rounded-full bg-black/60 px-3 py-1 text-xs text-green-400">
+          <div className="absolute bottom-4 left-4 rounded-full bg-black/60 backdrop-blur-sm px-3 py-1.5 text-xs text-green-400 font-medium flex items-center gap-1.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
             Body language tracking ready
           </div>
         )}
@@ -344,23 +388,23 @@ export function RecordingStudio({
       {/* Time progress bar */}
       {phase === "recording" && (
         <div className="space-y-1">
-          <Progress value={pct} className={`h-2 ${progressColor}`} />
-          <p className="text-xs text-muted-foreground text-right">{timeDisplay} remaining</p>
+          <Progress value={pct} className={`h-2.5 ${progressColor}`} />
+          <p className="text-xs text-muted-foreground text-right font-medium">{timeDisplay} remaining</p>
         </div>
       )}
 
       <div className="flex gap-3">
         {phase === "ready" && (
           <>
-            <Button variant="outline" onClick={retake} className="gap-2">
+            <Button variant="outline" onClick={retake} className="gap-2 shadow-sm">
               <RotateCcw className="h-4 w-4" />
               Cancel
             </Button>
-            <Button variant="outline" onClick={startImmediate} className="gap-2">
+            <Button variant="outline" onClick={startImmediate} className="gap-2 shadow-sm">
               <Mic className="h-4 w-4" />
               Start now
             </Button>
-            <Button onClick={startCountdown} className="flex-1 gap-2">
+            <Button onClick={startCountdown} className="flex-1 gap-2 h-11 shadow-lg shadow-primary/20">
               <Mic className="h-4 w-4" />
               5s countdown
             </Button>
@@ -368,7 +412,7 @@ export function RecordingStudio({
         )}
 
         {phase === "countdown" && (
-          <Button variant="outline" onClick={retake} className="w-full">
+          <Button variant="outline" onClick={retake} className="w-full h-11">
             Cancel
           </Button>
         )}
@@ -377,7 +421,7 @@ export function RecordingStudio({
           <Button
             variant="destructive"
             onClick={stopRecording}
-            className="w-full gap-2"
+            className="w-full gap-2 h-12 shadow-lg"
             size="lg"
           >
             <StopCircle className="h-5 w-5" />

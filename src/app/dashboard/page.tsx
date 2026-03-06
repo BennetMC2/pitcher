@@ -85,7 +85,7 @@ export default async function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">Track your pitch progress</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -94,14 +94,14 @@ export default async function DashboardPage() {
             credits={subscription?.credits ?? 0}
           />
           {completedCount >= 2 && (
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="shadow-sm">
               <Link href="/dashboard/compare">
                 <GitCompareArrows className="mr-1.5 h-4 w-4" />
                 Compare pitches
               </Link>
             </Button>
           )}
-          <Button asChild>
+          <Button asChild className="shadow-sm shadow-primary/20">
             <Link href="/dashboard/record">
               <Plus className="mr-1.5 h-4 w-4" />
               Record pitch
@@ -113,40 +113,48 @@ export default async function DashboardPage() {
       {/* Stats cards */}
       {completedCount > 0 && (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Card>
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Hash className="h-3.5 w-3.5" />
-                <span className="text-xs">Total pitches</span>
+          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="pt-5 pb-5">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50">
+                  <Hash className="h-3.5 w-3.5 text-blue-600" />
+                </div>
+                <span className="text-xs font-medium">Total pitches</span>
               </div>
-              <p className="text-2xl font-bold">{completedCount}</p>
+              <p className="text-3xl font-extrabold">{completedCount}</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <BarChart3 className="h-3.5 w-3.5" />
-                <span className="text-xs">Avg score</span>
+          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="pt-5 pb-5">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-50">
+                  <BarChart3 className="h-3.5 w-3.5 text-purple-600" />
+                </div>
+                <span className="text-xs font-medium">Avg score</span>
               </div>
-              <p className="text-2xl font-bold">{avgScore ?? "—"}</p>
+              <p className="text-3xl font-extrabold">{avgScore ?? "—"}</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Trophy className="h-3.5 w-3.5" />
-                <span className="text-xs">Best score</span>
+          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="pt-5 pb-5">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50">
+                  <Trophy className="h-3.5 w-3.5 text-green-600" />
+                </div>
+                <span className="text-xs font-medium">Best score</span>
               </div>
-              <p className="text-2xl font-bold text-green-600">{bestScore ?? "—"}</p>
+              <p className="text-3xl font-extrabold text-green-600">{bestScore ?? "—"}</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <TrendingUp className="h-3.5 w-3.5" />
-                <span className="text-xs">Improvement</span>
+          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="pt-5 pb-5">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-50">
+                  <TrendingUp className="h-3.5 w-3.5 text-orange-600" />
+                </div>
+                <span className="text-xs font-medium">Improvement</span>
               </div>
-              <p className={`text-2xl font-bold ${improvement !== null && improvement > 0 ? "text-green-600" : improvement !== null && improvement < 0 ? "text-red-600" : ""}`}>
+              <p className={`text-3xl font-extrabold ${improvement !== null && improvement > 0 ? "text-green-600" : improvement !== null && improvement < 0 ? "text-red-600" : ""}`}>
                 {improvement !== null ? `${improvement > 0 ? "+" : ""}${improvement}` : "—"}
               </p>
             </CardContent>

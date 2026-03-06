@@ -35,7 +35,7 @@ export function VerbalCard({ verbal }: { verbal: VerbalAnalysis }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-lg bg-muted/50 p-3">
+          <div className="rounded-lg clay-inset bg-card/50 p-3">
             <p className="text-xs text-muted-foreground">Speaking pace</p>
             <p
               className={`text-lg font-bold mt-0.5 ${
@@ -50,7 +50,7 @@ export function VerbalCard({ verbal }: { verbal: VerbalAnalysis }) {
             </p>
             <p className="text-xs text-muted-foreground">ideal: 130–160</p>
           </div>
-          <div className="rounded-lg bg-muted/50 p-3">
+          <div className="rounded-lg clay-inset bg-card/50 p-3">
             <p className="text-xs text-muted-foreground">Filler words</p>
             <p
               className={`text-lg font-bold mt-0.5 ${
@@ -217,7 +217,7 @@ export function BodyLanguageCard({ bodyLanguage, isPro }: BodyLanguageCardProps)
   return (
     <Card className="relative overflow-hidden">
       {!isPro && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 backdrop-blur-sm bg-background/70 rounded-xl">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 backdrop-blur-sm bg-card/80 clay-shadow rounded-2xl">
           <Lock className="h-8 w-8 text-muted-foreground" />
           <div className="text-center">
             <p className="font-semibold text-sm">Credit feature</p>

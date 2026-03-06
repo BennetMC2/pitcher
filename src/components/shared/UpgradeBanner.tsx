@@ -19,7 +19,7 @@ export function UpgradeBanner({
 }: UpgradeBannerProps) {
   if (variant === "compact") {
     return (
-      <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+      <div className="flex items-center justify-between rounded-2xl bg-primary/5 clay-shadow-sm px-4 py-3">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary shrink-0" />
           <p className="text-sm font-medium">{title}</p>
@@ -34,7 +34,7 @@ export function UpgradeBanner({
   }
 
   return (
-    <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10 p-6">
+    <div className="rounded-2xl bg-card clay-shadow p-6">
       <div className="flex items-start gap-4">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
           <Sparkles className="h-5 w-5 text-primary" />

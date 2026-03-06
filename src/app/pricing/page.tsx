@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Coins, Loader2, Mic2, X, TrendingUp } from "lucide-react";
+import { Check, Coins, Loader2, X, TrendingUp } from "lucide-react";
 import { CREDIT_PACKS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
@@ -41,7 +41,6 @@ export default function PricingPage() {
   }, []);
 
   async function handleBuy(packId: string) {
-    // If not authenticated, redirect to signup with purchase intent
     if (!isAuthed) {
       router.push(`/auth/signup?intent=purchase&pack=${packId}`);
       return;
@@ -70,10 +69,12 @@ export default function PricingPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b bg-background/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+      <header className="pt-4 px-4">
+        <div className="mx-auto flex max-w-4xl items-center justify-between rounded-full bg-card/90 backdrop-blur-sm clay-shadow-sm px-6 py-3">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <Mic2 className="h-5 w-5 text-primary" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary">
+              <Check className="h-4 w-4 text-primary-foreground" />
+            </div>
             Nailed It
           </Link>
           <div className="flex items-center gap-3">
@@ -107,7 +108,7 @@ export default function PricingPage() {
 
           <div className="mt-16 grid gap-8 md:grid-cols-2">
             {/* Free tier */}
-            <div className="rounded-2xl border p-8">
+            <div className="rounded-3xl bg-card clay-shadow p-8">
               <h2 className="text-lg font-semibold">Free</h2>
               <p className="mt-1 text-sm text-muted-foreground">Try it out</p>
               <div className="mt-4 flex items-baseline gap-1">
@@ -128,7 +129,7 @@ export default function PricingPage() {
             </div>
 
             {/* Credit packs */}
-            <div className="relative rounded-2xl border border-primary p-8 shadow-lg shadow-primary/10 ring-1 ring-primary">
+            <div className="relative rounded-3xl bg-card clay-shadow-lg p-8 ring-2 ring-primary">
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
                 Pay as you go
               </Badge>
@@ -143,8 +144,8 @@ export default function PricingPage() {
                   return (
                     <div
                       key={pack.id}
-                      className={`rounded-xl border p-4 flex items-center justify-between ${
-                        isBestValue ? "border-primary bg-primary/5" : ""
+                      className={`rounded-2xl clay-shadow-sm p-4 flex items-center justify-between ${
+                        isBestValue ? "ring-1 ring-primary bg-primary/5" : "bg-card"
                       }`}
                     >
                       <div>
@@ -198,7 +199,7 @@ export default function PricingPage() {
 
           {/* Social proof */}
           <div className="mt-12 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-background px-5 py-2 shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full bg-card clay-shadow-sm px-5 py-2">
               <TrendingUp className="h-4 w-4 text-primary" />
               <span className="text-sm">
                 <span className="font-bold text-primary">89%</span> of users improved their score by their second pitch
@@ -209,8 +210,8 @@ export default function PricingPage() {
           {/* Feature comparison table */}
           <div className="mt-16">
             <h2 className="text-center text-2xl font-bold mb-8">What&apos;s included</h2>
-            <div className="overflow-hidden rounded-xl border">
-              <div className="grid grid-cols-3 gap-0 border-b bg-muted/50 px-4 py-3 text-sm font-semibold">
+            <div className="overflow-hidden rounded-2xl bg-card clay-shadow">
+              <div className="grid grid-cols-3 gap-0 bg-muted/30 px-4 py-3 text-sm font-semibold">
                 <span>Feature</span>
                 <span className="text-center">Free</span>
                 <span className="text-center">Credit</span>
@@ -225,7 +226,7 @@ export default function PricingPage() {
                 { name: "AI-rewritten script", free: false, credit: true },
                 { name: "Credits expire", free: "—", credit: "Never" },
               ].map((f) => (
-                <div key={f.name} className="grid grid-cols-3 gap-0 border-b last:border-0 px-4 py-3 text-sm">
+                <div key={f.name} className="grid grid-cols-3 gap-0 border-b border-border/50 last:border-0 px-4 py-3 text-sm">
                   <span>{f.name}</span>
                   <span className="flex justify-center">
                     {f.free === true ? (
@@ -251,7 +252,7 @@ export default function PricingPage() {
           {/* FAQ */}
           <div className="mt-16">
             <h2 className="text-center text-2xl font-bold mb-8">Frequently asked questions</h2>
-            <div className="space-y-4 max-w-2xl mx-auto">
+            <div className="space-y-3 max-w-2xl mx-auto">
               {[
                 { q: "Do credits expire?", a: "No. Credits never expire. Use them whenever you're ready." },
                 { q: "What counts as a 'pitch'?", a: "One recording + AI analysis = one pitch. Whether it's 30 seconds or 5 minutes." },
@@ -259,12 +260,14 @@ export default function PricingPage() {
                 { q: "What's the difference between free and credit pitches?", a: "Free pitches include verbal delivery and story structure analysis. Credit pitches add body language analysis, an AI-rewritten script, and 5-minute max recording." },
                 { q: "Is my video stored securely?", a: "Yes. Videos are encrypted and stored securely. Only you can access your recordings and feedback." },
               ].map((faq) => (
-                <details key={faq.q} className="group rounded-lg border px-4 py-3">
-                  <summary className="cursor-pointer font-medium text-sm list-none flex items-center justify-between">
+                <details key={faq.q} className="group rounded-2xl bg-card clay-shadow-sm overflow-hidden">
+                  <summary className="cursor-pointer px-5 py-4 font-medium text-sm list-none flex items-center justify-between">
                     {faq.q}
-                    <span className="text-muted-foreground group-open:rotate-180 transition-transform">▾</span>
+                    <span className="text-muted-foreground group-open:rotate-180 transition-transform flex h-6 w-6 items-center justify-center rounded-full bg-muted group-open:bg-primary group-open:text-primary-foreground">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </span>
                   </summary>
-                  <p className="mt-2 text-sm text-muted-foreground">{faq.a}</p>
+                  <p className="px-5 pb-4 -mt-1 text-sm text-muted-foreground">{faq.a}</p>
                 </details>
               ))}
             </div>

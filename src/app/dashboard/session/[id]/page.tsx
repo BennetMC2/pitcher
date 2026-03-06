@@ -180,18 +180,19 @@ export default async function SessionPage({
   const totalFillers = (fb.filler_words ?? []).reduce((sum: number, f: { count: number }) => sum + f.count, 0);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-8 pb-12">
+      {/* Header with breadcrumb */}
       <div>
-        <Button variant="ghost" size="sm" asChild className="-ml-2 mb-4">
+        <Button variant="ghost" size="sm" asChild className="-ml-2 mb-4 text-muted-foreground hover:text-foreground">
           <Link href="/dashboard">
-            <ArrowLeft className="mr-1.5 h-4 w-4" /> Dashboard
+            <ArrowLeft className="mr-1.5 h-4 w-4" /> Back to Dashboard
           </Link>
         </Button>
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold">{session.title}</h1>
-              <Badge variant="outline" className="text-xs">
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-2xl font-bold tracking-tight">{session.title}</h1>
+              <Badge variant="outline" className="text-xs font-medium">
                 {getGoalLabel(goal)}
               </Badge>
             </div>
@@ -205,50 +206,58 @@ export default async function SessionPage({
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ChallengeButton sessionId={session.id} score={fb.overall_score} grade={fb.grade} />
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm" className="shadow-sm">
               <Link href={`/dashboard/compare?a=${session.id}`}>
                 <GitCompareArrows className="mr-1.5 h-4 w-4" />
                 Compare
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
+            <Button asChild size="sm" className="shadow-sm">
               <Link href="/dashboard/record">Record another</Link>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Overall score */}
-      <Card>
-        <CardContent className="pt-6 space-y-4">
-          <OverallScore
-            score={fb.overall_score}
-            grade={fb.grade}
-            confidenceLevel={fb.confidence_level}
-          />
-          <MiniStats
-            wpm={fb.wpm}
-            clarity={fb.clarity_score}
-            structurePresent={structurePresent}
-            structureTotal={structureTotal}
-            fillerCount={totalFillers}
-          />
-          <div className="flex justify-center pt-2">
-            <ShareableScoreCard score={fb.overall_score} grade={fb.grade} sessionId={session.id} />
-          </div>
-        </CardContent>
+      {/* Overall score — hero card */}
+      <Card className="overflow-hidden clay-shadow-lg">
+        <div className="rounded-xl">
+          <CardContent className="pt-8 pb-6 space-y-6">
+            <OverallScore
+              score={fb.overall_score}
+              grade={fb.grade}
+              confidenceLevel={fb.confidence_level}
+            />
+            <MiniStats
+              wpm={fb.wpm}
+              clarity={fb.clarity_score}
+              structurePresent={structurePresent}
+              structureTotal={structureTotal}
+              fillerCount={totalFillers}
+            />
+            <div className="flex justify-center pt-2">
+              <ShareableScoreCard score={fb.overall_score} grade={fb.grade} sessionId={session.id} />
+            </div>
+          </CardContent>
+        </div>
       </Card>
 
       {/* Coaching tips */}
-      <CoachingTips
-        strengths={fb.top_strengths ?? []}
-        improvements={fb.priority_improvements ?? []}
-      />
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Coaching Feedback</h2>
+        <CoachingTips
+          strengths={fb.top_strengths ?? []}
+          improvements={fb.priority_improvements ?? []}
+        />
+      </div>
 
       {/* Analysis cards */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <VerbalCard verbal={verbal} />
-        <StoryStructureCard structure={structure} goal={goal} />
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Detailed Analysis</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <VerbalCard verbal={verbal} />
+          <StoryStructureCard structure={structure} goal={goal} />
+        </div>
       </div>
 
       <BodyLanguageCard bodyLanguage={bodyLanguage} isPro={isPaid} />

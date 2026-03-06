@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { MobileNav } from "@/components/landing/MobileNav";
-import { Mic2 } from "lucide-react";
+import { Check, Mic2 } from "lucide-react";
 
 const Testimonials = dynamic(() => import("@/components/landing/Testimonials").then(m => m.Testimonials));
 const FeatureShowcase = dynamic(() => import("@/components/landing/FeatureShowcase").then(m => m.FeatureShowcase));
@@ -17,29 +17,31 @@ const EmailCapture = dynamic(() => import("@/components/landing/EmailCapture").t
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col scroll-smooth">
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      {/* Nav — floating pill */}
+      <header className="sticky top-0 z-50 pt-4 px-4">
+        <div className="mx-auto flex max-w-5xl items-center justify-between rounded-full bg-card/90 backdrop-blur-sm clay-shadow-sm px-6 py-3">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <Mic2 className="h-5 w-5 text-primary" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary">
+              <Check className="h-4 w-4 text-primary-foreground" />
+            </div>
             Nailed It
           </Link>
-          <nav className="hidden items-center gap-6 text-sm md:flex">
+          <nav className="hidden items-center gap-1 text-sm md:flex">
             <Link
               href="#how-it-works"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="rounded-full px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
               How it works
             </Link>
             <Link
               href="#pricing"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="rounded-full px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="#faq"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="rounded-full px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
               FAQ
             </Link>
@@ -48,7 +50,7 @@ export default function LandingPage() {
             <Button variant="ghost" size="sm" asChild>
               <Link href="/auth/login">Log in</Link>
             </Button>
-            <Button size="sm" asChild>
+            <Button size="sm" asChild className="glow-teal">
               <Link href="/record">Record a pitch</Link>
             </Button>
           </div>
@@ -80,32 +82,36 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground sm:flex-row">
-          <div className="flex items-center gap-2">
-            <Mic2 className="h-4 w-4" />
-            <span className="font-medium text-foreground">Nailed It</span>
-            <span>— AI Pitch Coach</span>
-          </div>
-          <div className="flex gap-6">
-            <Link
-              href="/pricing"
-              className="hover:text-foreground transition-colors"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/auth/login"
-              className="hover:text-foreground transition-colors"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="hover:text-foreground transition-colors"
-            >
-              Sign up
-            </Link>
+      <footer className="py-8">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-card clay-shadow-sm px-6 py-6 text-sm text-muted-foreground sm:flex-row">
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
+                <Check className="h-3.5 w-3.5 text-primary-foreground" />
+              </div>
+              <span className="font-medium text-foreground">Nailed It</span>
+              <span>— AI Pitch Coach</span>
+            </div>
+            <div className="flex gap-6">
+              <Link
+                href="/pricing"
+                className="hover:text-foreground transition-colors"
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/auth/login"
+                className="hover:text-foreground transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="hover:text-foreground transition-colors"
+              >
+                Sign up
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

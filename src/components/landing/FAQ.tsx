@@ -35,10 +35,13 @@ const faqs = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="py-24">
+    <section id="faq" className="py-28">
       <div className="mx-auto max-w-3xl px-6">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <div className="text-center mb-14">
+          <p className="text-sm font-semibold text-primary tracking-widest uppercase mb-3">
+            FAQ
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Frequently asked questions
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
@@ -46,21 +49,30 @@ export function FAQ() {
           </p>
         </div>
 
-        <div className="mt-12 space-y-3">
-          {faqs.map((faq) => (
+        <div className="space-y-3">
+          {faqs.map((faq, i) => (
             <details
               key={faq.q}
-              className="group rounded-xl border bg-background px-5 py-4 transition-colors hover:bg-muted/30"
+              className="group rounded-2xl bg-card clay-shadow-sm transition-all duration-200 overflow-hidden"
             >
-              <summary className="cursor-pointer font-medium text-sm list-none flex items-center justify-between gap-4">
-                <span>{faq.q}</span>
-                <span className="text-muted-foreground group-open:rotate-180 transition-transform shrink-0">
-                  ▾
+              <summary className="cursor-pointer px-6 py-5 font-medium text-sm list-none flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary/20 text-xs font-bold text-muted-foreground">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-left">{faq.q}</span>
+                </div>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground group-open:bg-primary group-open:text-primary-foreground group-open:rotate-180 transition-all duration-200">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
+                    <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                {faq.a}
-              </p>
+              <div className="px-6 pb-5 -mt-1">
+                <p className="text-sm text-muted-foreground leading-relaxed pl-10">
+                  {faq.a}
+                </p>
+              </div>
             </details>
           ))}
         </div>

@@ -72,7 +72,7 @@ export function SessionList({ sessions, loading }: SessionListProps) {
 
   if (sessions.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-3xl bg-card clay-shadow py-16 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 mb-4">
           <Mic2 className="h-7 w-7 text-primary" />
         </div>
@@ -102,7 +102,7 @@ export function SessionList({ sessions, loading }: SessionListProps) {
         <Link
           key={session.id}
           href={`/dashboard/session/${session.id}`}
-          className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-accent"
+          className="flex items-center gap-4 rounded-2xl bg-card clay-shadow-sm p-4 transition-all duration-200 hover:bg-accent hover:-translate-y-0.5"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
             <Mic2 className="h-5 w-5 text-primary" />

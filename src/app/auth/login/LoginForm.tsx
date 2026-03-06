@@ -57,7 +57,8 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
+    <div className="relative flex min-h-screen flex-col items-center justify-center px-4">
+      <div className="absolute inset-0 bg-pink-grid opacity-20" aria-hidden />
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2 font-bold text-xl">
@@ -68,7 +69,7 @@ export function LoginForm() {
           <p className="mt-1 text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <div className="rounded-2xl border bg-background p-8 shadow-sm">
+        <div className="relative rounded-3xl bg-card clay-shadow-lg p-8 border-0">
           <div className="space-y-2">
             <Button
               variant="outline"

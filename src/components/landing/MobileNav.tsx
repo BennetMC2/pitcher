@@ -22,7 +22,7 @@ export function MobileNav() {
           <span className="sr-only">Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[260px]">
+      <SheetContent side="right" className="w-[260px] bg-card">
         <SheetTitle className="sr-only">Navigation</SheetTitle>
         <nav className="flex flex-col gap-4 mt-8">
           <Link
