@@ -10,7 +10,7 @@ export function Testimonials() {
 
   return (
     <section className="py-16" ref={ref}>
-      <div className="mx-auto max-w-5xl px-6">
+      <div className="mx-auto max-w-7xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
