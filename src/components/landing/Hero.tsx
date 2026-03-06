@@ -58,7 +58,7 @@ export function Hero() {
         </div>
 
         {/* Hero illustration — full-width diorama image */}
-        <div ref={sectionRef} className="-mx-6 mt-4 sm:-mx-12 md:-mx-20 lg:-mx-32">
+        <div ref={sectionRef} className="-mx-6 -mt-4 sm:-mx-12 md:-mx-20 lg:-mx-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
