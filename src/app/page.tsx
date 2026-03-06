@@ -50,7 +50,7 @@ export default function LandingPage() {
             <Button variant="outline" size="sm" asChild>
               <Link href="/auth/login">Log in</Link>
             </Button>
-            <Button size="sm" asChild className="glow-teal">
+            <Button size="sm" asChild className="glow-teal-strong">
               <Link href="/record">Record a pitch</Link>
             </Button>
           </div>
