@@ -102,7 +102,7 @@ export function SessionList({ sessions, loading }: SessionListProps) {
         <Link
           key={session.id}
           href={`/dashboard/session/${session.id}`}
-          className="flex items-center gap-4 rounded-2xl bg-card clay-shadow-sm p-4 transition-all duration-200 hover:bg-accent hover:-translate-y-0.5"
+          className="flex items-center gap-4 rounded-xl bg-card clay-shadow-sm p-4 transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
             <Mic2 className="h-5 w-5 text-primary" />

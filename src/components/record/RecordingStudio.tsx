@@ -340,7 +340,8 @@ export function RecordingStudio({
   // ── COUNTDOWN / READY / RECORDING ─────────────────────────────────────────
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-3xl clay-shadow-lg bg-muted/10">
+      <div className="relative overflow-hidden rounded-3xl bg-[#A3C1D4]/20 clay-shadow p-3">
+      <div className="relative overflow-hidden rounded-2xl bg-muted/10">
         <video
           ref={videoRef}
           autoPlay
@@ -383,6 +384,7 @@ export function RecordingStudio({
             Body language tracking ready
           </div>
         )}
+      </div>
       </div>
 
       {/* Time progress bar */}

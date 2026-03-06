@@ -113,7 +113,7 @@ export default async function DashboardPage() {
       {/* Stats cards */}
       {completedCount > 0 && (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+          <Card className="transition-all duration-300 hover:-translate-y-1 rounded-2xl">
             <CardContent className="pt-5 pb-5">
               <div className="flex items-center gap-2 text-muted-foreground mb-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50">
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
               <p className="text-3xl font-extrabold">{completedCount}</p>
             </CardContent>
           </Card>
-          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+          <Card className="transition-all duration-300 hover:-translate-y-1 rounded-2xl">
             <CardContent className="pt-5 pb-5">
               <div className="flex items-center gap-2 text-muted-foreground mb-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-50">
@@ -135,7 +135,7 @@ export default async function DashboardPage() {
               <p className="text-3xl font-extrabold">{avgScore ?? "—"}</p>
             </CardContent>
           </Card>
-          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+          <Card className="transition-all duration-300 hover:-translate-y-1 rounded-2xl">
             <CardContent className="pt-5 pb-5">
               <div className="flex items-center gap-2 text-muted-foreground mb-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50">
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
               <p className="text-3xl font-extrabold text-green-600">{bestScore ?? "—"}</p>
             </CardContent>
           </Card>
-          <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
+          <Card className="transition-all duration-300 hover:-translate-y-1 rounded-2xl">
             <CardContent className="pt-5 pb-5">
               <div className="flex items-center gap-2 text-muted-foreground mb-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-50">

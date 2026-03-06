@@ -1,3 +1,8 @@
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+
 const faqs = [
   {
     q: "How does Nailed It work?",
@@ -34,10 +39,18 @@ const faqs = [
 ];
 
 export function FAQ() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
+
   return (
-    <section id="faq" className="py-28">
+    <section id="faq" className="py-28" ref={ref}>
       <div className="mx-auto max-w-3xl px-6">
-        <div className="text-center mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
           <p className="text-sm font-semibold text-primary tracking-widest uppercase mb-3">
             FAQ
           </p>
@@ -47,33 +60,39 @@ export function FAQ() {
           <p className="mt-4 text-lg text-muted-foreground">
             Everything you need to know about Nailed It.
           </p>
-        </div>
+        </motion.div>
 
         <div className="space-y-3">
           {faqs.map((faq, i) => (
-            <details
+            <motion.div
               key={faq.q}
-              className="group rounded-2xl bg-card clay-shadow-sm transition-all duration-200 overflow-hidden"
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
             >
-              <summary className="cursor-pointer px-6 py-5 font-medium text-sm list-none flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary/20 text-xs font-bold text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
+              <details
+                className="group rounded-2xl bg-white clay-shadow-sm transition-all duration-200 overflow-hidden"
+              >
+                <summary className="cursor-pointer px-6 py-5 font-medium text-sm list-none flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-white text-sm font-bold">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-left">{faq.q}</span>
+                  </div>
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground group-open:bg-primary group-open:text-primary-foreground group-open:rotate-180 transition-all duration-300">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
+                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </span>
-                  <span className="text-left">{faq.q}</span>
+                </summary>
+                <div className="px-6 pb-6 -mt-1">
+                  <p className="text-sm text-muted-foreground leading-relaxed pl-11">
+                    {faq.a}
+                  </p>
                 </div>
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground group-open:bg-primary group-open:text-primary-foreground group-open:rotate-180 transition-all duration-200">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
-                    <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </summary>
-              <div className="px-6 pb-5 -mt-1">
-                <p className="text-sm text-muted-foreground leading-relaxed pl-10">
-                  {faq.a}
-                </p>
-              </div>
-            </details>
+              </details>
+            </motion.div>
           ))}
         </div>
       </div>

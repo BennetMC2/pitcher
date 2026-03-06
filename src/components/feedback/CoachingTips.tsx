@@ -25,7 +25,7 @@ export function CoachingTips({ strengths, improvements }: CoachingTipsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {/* Strengths */}
-      <Card className="border-green-200 bg-green-50/50">
+      <Card className="bg-green-50/50 rounded-2xl">
         <CardHeader className="pb-3">
           <CardTitle className="text-base text-green-800">What you did well</CardTitle>
         </CardHeader>
@@ -55,7 +55,7 @@ export function CoachingTips({ strengths, improvements }: CoachingTipsProps) {
             return (
               <div
                 key={i}
-                className={`space-y-1.5 ${isFirst ? "rounded-lg border border-primary/20 bg-primary/5 p-3 -mx-1" : ""}`}
+                className={`space-y-1.5 ${isFirst ? "rounded-lg bg-primary/5 border-l-4 border-primary p-3 -mx-1" : ""}`}
               >
                 <div className="flex items-center gap-2">
                   <ImpactIcon className={`h-3.5 w-3.5 shrink-0 ${impact.color}`} />

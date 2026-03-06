@@ -16,12 +16,12 @@ const EmailCapture = dynamic(() => import("@/components/landing/EmailCapture").t
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col scroll-smooth">
+    <div className="flex min-h-screen flex-col scroll-smooth bg-grid-pattern">
       {/* Nav — floating pill */}
       <header className="sticky top-0 z-50 pt-4 px-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between rounded-full bg-card/90 backdrop-blur-sm clay-shadow-sm px-6 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between rounded-full bg-pink-100/80 backdrop-blur-sm clay-shadow px-6 py-3">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary clay-shadow-sm">
               <Check className="h-4 w-4 text-primary-foreground" />
             </div>
             Nailed It
@@ -29,25 +29,25 @@ export default function LandingPage() {
           <nav className="hidden items-center gap-1 text-sm md:flex">
             <Link
               href="#how-it-works"
-              className="rounded-full px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="rounded-full border border-border/50 px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-white/50 transition-colors"
             >
               How it works
             </Link>
             <Link
               href="#pricing"
-              className="rounded-full px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="rounded-full border border-border/50 px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-white/50 transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="#faq"
-              className="rounded-full px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="rounded-full border border-border/50 px-4 py-1.5 text-muted-foreground hover:text-foreground hover:bg-white/50 transition-colors"
             >
               FAQ
             </Link>
           </nav>
           <div className="hidden items-center gap-3 md:flex">
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="outline" size="sm" asChild>
               <Link href="/auth/login">Log in</Link>
             </Button>
             <Button size="sm" asChild className="glow-teal">

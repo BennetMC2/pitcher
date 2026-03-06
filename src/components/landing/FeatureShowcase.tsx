@@ -1,4 +1,8 @@
+"use client";
+
+import { useRef } from "react";
 import Link from "next/link";
+import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, X, Sparkles, ArrowRight } from "lucide-react";
 
@@ -13,12 +17,20 @@ const features = [
 ];
 
 export function FeatureShowcase() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
+
   return (
-    <section id="pricing" className="py-28">
+    <section id="pricing" className="py-28" ref={ref}>
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Left: Free vs Pro table on pink/card background */}
-          <div className="rounded-3xl bg-card clay-shadow p-8">
+          {/* Left: Free vs Pro pricing table */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="rounded-3xl bg-card clay-shadow p-8"
+          >
             <div className="mb-6">
               <div className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 mb-3">
                 <Sparkles className="h-5 w-5 text-primary" />
@@ -31,13 +43,14 @@ export function FeatureShowcase() {
               </p>
             </div>
 
-            <div className="overflow-hidden rounded-2xl clay-inset">
-              {/* Header */}
-              <div className="grid grid-cols-3 gap-0 bg-muted/30 px-4 py-3">
-                <span className="text-xs font-semibold text-foreground">Feature</span>
-                <span className="text-center text-xs font-semibold text-foreground">Free</span>
-                <span className="text-center text-xs font-semibold text-foreground">
-                  <span className="inline-flex items-center gap-1">
+            {/* Feature rows as pill modules */}
+            <div className="space-y-3">
+              {/* Header row */}
+              <div className="grid grid-cols-3 gap-0 px-4 py-2">
+                <span className="text-xs font-semibold text-muted-foreground">Feature</span>
+                <span className="text-center text-xs font-semibold text-muted-foreground">Free</span>
+                <span className="text-center text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1 text-foreground">
                     Credit
                     <span className="inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold text-primary">
                       PRO
@@ -45,48 +58,62 @@ export function FeatureShowcase() {
                   </span>
                 </span>
               </div>
-              {features.map((f, i) => (
+
+              {features.map((f) => (
                 <div
                   key={f.name}
-                  className={`grid grid-cols-3 gap-0 px-4 py-3 text-xs transition-colors hover:bg-muted/10 ${
-                    i < features.length - 1 ? "border-b border-border/50" : ""
-                  }`}
+                  className="grid grid-cols-3 gap-0 rounded-xl bg-white clay-shadow-sm p-4 items-center"
                 >
-                  <span className="font-medium">{f.name}</span>
+                  <span className="text-sm font-medium">{f.name}</span>
                   <span className="flex justify-center">
                     {f.free === true ? (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
-                        <Check className="h-3 w-3 text-green-600" />
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" />
                       </span>
                     ) : f.free === false ? (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-muted">
-                        <X className="h-3 w-3 text-muted-foreground/40" />
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-red-50">
+                        <X className="h-3.5 w-3.5 text-red-400" />
                       </span>
                     ) : (
-                      <span className="text-muted-foreground font-medium">{f.free}</span>
+                      <span className="text-sm text-muted-foreground font-medium">{f.free}</span>
                     )}
                   </span>
                   <span className="flex justify-center">
                     {f.credit === true ? (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-50">
-                        <Check className="h-3 w-3 text-green-600" />
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                        <Check className="h-3.5 w-3.5 text-green-600" />
                       </span>
                     ) : (
-                      <span className="font-semibold text-primary">{f.credit}</span>
+                      <span className="text-sm font-semibold text-primary">{f.credit}</span>
                     )}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Right: Navy dark section */}
-          <div className="rounded-3xl bg-navy clay-shadow p-8 flex flex-col justify-between">
+            {/* Illustration placeholders */}
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-muted/30 clay-inset p-4 flex items-center justify-center h-20 text-xs text-muted-foreground">
+                {/* PLACEHOLDER: AI Rewritten Script illustration */}
+              </div>
+              <div className="rounded-xl bg-muted/30 clay-inset p-4 flex items-center justify-center h-20 text-xs text-muted-foreground">
+                {/* PLACEHOLDER: Body Language analysis illustration */}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right: Navy dark CTA section */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="rounded-3xl bg-[#1E293B] clay-shadow p-8 flex flex-col justify-between"
+          >
             <div>
               <p className="text-sm font-semibold text-primary tracking-widest uppercase mb-4">
                 Don&apos;t wing it
               </p>
-              <h2 className="text-3xl font-bold tracking-tight text-white leading-tight">
+              <h2 className="text-4xl font-black tracking-tight text-white leading-tight">
                 Don&apos;t practice on your investors.
               </h2>
               <p className="mt-4 text-sm text-white/60 leading-relaxed">
@@ -95,22 +122,21 @@ export function FeatureShowcase() {
             </div>
 
             {/* Illustration placeholder */}
-            <div className="my-8 flex justify-center">
-              <div className="h-32 w-32 rounded-2xl bg-white/5 clay-inset flex items-center justify-center">
-                <Sparkles className="h-12 w-12 text-primary/60" />
-              </div>
+            <div className="my-8 w-full h-48 rounded-2xl bg-slate-800/50 flex items-center justify-center text-slate-500">
+              {/* PLACEHOLDER: Isometric scene illustration */}
+              <Sparkles className="h-12 w-12 text-primary/40" />
             </div>
 
             <Button
               size="lg"
               asChild
-              className="w-full gap-2 text-base glow-teal animate-pulse-glow"
+              className="w-full gap-2 text-base glow-teal-strong animate-pulse-glow"
             >
               <Link href="/record">
                 Start practicing now <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

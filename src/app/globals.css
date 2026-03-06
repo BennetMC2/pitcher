@@ -136,28 +136,35 @@
 /* ── Claymorphism Utility Classes ──────────────────────────────────────── */
 
 .clay-shadow {
-  box-shadow: 8px 8px 16px rgba(0,0,0,0.08), -4px -4px 8px rgba(255,255,255,0.7);
+  box-shadow: 8px 8px 16px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.6);
 }
 .clay-shadow-sm {
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.06), -2px -2px 4px rgba(255,255,255,0.6);
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.06), -2px -2px 6px rgba(255,255,255,0.5);
 }
 .clay-shadow-lg {
-  box-shadow: 12px 12px 24px rgba(0,0,0,0.1), -6px -6px 12px rgba(255,255,255,0.8);
+  box-shadow: 12px 12px 24px rgba(0,0,0,0.1), -6px -6px 16px rgba(255,255,255,0.7);
 }
 .clay-inset {
-  box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -2px -2px 4px rgba(255,255,255,0.5);
+  box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -2px -2px 6px rgba(255,255,255,0.5);
 }
 .glow-teal {
-  box-shadow: 0 0 20px rgba(0,229,204,0.4), 0 0 40px rgba(0,229,204,0.2), 4px 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 0 20px rgba(0,229,204,0.4), 0 0 40px rgba(0,229,204,0.15);
 }
-.glow-teal-hover {
-  box-shadow: 0 0 30px rgba(0,229,204,0.5), 0 0 60px rgba(0,229,204,0.25), 6px 6px 16px rgba(0,0,0,0.1);
+.glow-teal-strong {
+  box-shadow: 0 0 30px rgba(0,229,204,0.5), 0 0 60px rgba(0,229,204,0.2);
 }
 
 .bg-pink-grid {
   background-image:
     linear-gradient(to right, var(--pink-grid) 1px, transparent 1px),
     linear-gradient(to bottom, var(--pink-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(rgba(200,150,160,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,150,160,0.08) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
